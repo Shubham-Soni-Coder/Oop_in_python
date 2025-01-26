@@ -27,6 +27,7 @@ class gamebasic:
         self.clock = pygame.time.Clock() 
         self.fps = 60 
         self.after_time = 1000 // 2 # set timer in milli seconds 
+        self.show = False
         # custem event 
         self.my_event = pygame.USEREVENT + 1 # event for 1 sec 
         # mouse variable 
@@ -34,6 +35,13 @@ class gamebasic:
 
         # bullet management 
         self.bullet_list = []   
+
+    def show_fps(self,fps_text):
+
+        font = pygame.font.SysFont(None, 30)
+        fps_surface = font.render(f'FPS: {int(fps_text)}', True, color['white'])
+        self.screen.blit(fps_surface, (10, 10))
+
     def simple_event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -49,6 +57,8 @@ class gamebasic:
                 if event.key==pygame.K_LCTRL: # event of mouse visible or not 
                     self.mouse_press = not self.mouse_press
                     pygame.mouse.set_visible(self.mouse_press)
+                if event.key==pygame.K_SPACE:
+                    self.show = not self.show
 
     def call_classes(self):
         self.spaceship = spaceship(self.height//2,self.width//2, self.screen) # Call the spaceship class
@@ -56,7 +66,9 @@ class gamebasic:
         self.bullet = bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12) # call the bullet class
         self.userhealtbar = healtbar(0,0,100,20,100) # user spaceship healt bar 
         self.enemyhealtbar = healtbar(self.enemy.enemy_x-20,self.enemy.enemy_y,30,5,100) # class of enemy healtbar
-       
+
+
+
     def gameloop(self): 
         self.run = True
         pygame.time.set_timer(self.my_event,self.after_time,loops=1) # start the timer 
@@ -114,11 +126,10 @@ class gamebasic:
             self.enemyhealtbar.update_value(self.enemy.enemy_x,self.enemy.enemy_y)
             self.enemyhealtbar.draw(self.screen)
 
-            # Display FPS
-            fps_text = self.clock.get_fps()
-            font = pygame.font.SysFont(None, 30)
-            fps_surface = font.render(f'FPS: {int(fps_text)}', True, color['white'])
-            self.screen.blit(fps_surface, (10, 10))
+            # show fps
+            if self.show:
+                fps_text = self.clock.get_fps()
+                self.show_fps(fps_text)
 
             self.clock.tick(self.fps)
             pygame.display.flip()
