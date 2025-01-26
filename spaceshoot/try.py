@@ -41,7 +41,7 @@ class gamebasic:
 
         font = pygame.font.SysFont(None, 30)
         fps_surface = font.render(f'FPS: {int(fps_text)}', True, color['white'])
-        self.screen.blit(fps_surface, (10, 10))
+        self.screen.blit(fps_surface, (10, 20))
 
     def simple_event(self):
         for event in pygame.event.get():
@@ -68,15 +68,42 @@ class gamebasic:
         self.userhealtbar = healtbar(0,0,100,20,100) # user spaceship healt bar 
         self.enemyhealtbar = healtbar(self.enemy.enemy_x-20,self.enemy.enemy_y,30,5,100) # class of enemy healtbar
 
+    def after_gameover(self):
+        self.run = False
+        font = pygame.font.SysFont(None, 60)
+        textsurface = font.render('Game Over', True, color['white'])
+        self.screen.blit(textsurface, (self.width//2-100, self.height//2))
+        pygame.display.update()
+        game_over = True
+        while game_over:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    game_over = False
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key in [pygame.K_KP_ENTER,pygame.KSCAN_KP_ENTER]:
+                        game_over = False
+                        self.run = True
+                        # self.spaceship.reset()
+                        # self.enemy.reset()
+                        self.gameloop()
+
+
+
     def gameloop(self): 
         self.run = True
         pygame.time.set_timer(self.my_event,self.after_time,loops=1) # start the timer 
         self.call_classes() # call all the classes 
         while self.run:
             self.screen.fill(color['black']) # set background color to black
-            self.simple_event() 
+            if self.userhealtbar.current_hp <= 0:
+                self.after_gameover() # game over
+            
+            if self.spaceship.remaining_life <= 0 :
+                self.after_gameover() 
 
-            # get key presss 
+            # get key presss     
             key = pygame.key.get_pressed()
             if key[pygame.K_UP] and self.spaceship.ship_y > 0 :
                 self.spaceship.move(0,-10)
@@ -107,13 +134,9 @@ class gamebasic:
                 self.enemyhealtbar.current_hp = self.enemyhealtbar.max_hp # reset enemyhealtbar 
                 # Create a new enemy spaceship at a random position
                 self.enemy.choice_image(reset=True)  
-            if self.userhealtbar.current_hp <= 0:
-                print('gameover') 
-
             if self.enemy.enemy_y>= self.height: # enemy ship out from screen
                 self.enemyhealtbar.current_hp = 100
                 self.spaceship.remaining_life -= 1 
-
             if self.enemyhealtbar.current_hp <= 0: # if 0
                 self.spaceship.score += 1 
                 self.enemy.choice_image(reset=True) # create a new enemy spaceship 
@@ -123,7 +146,6 @@ class gamebasic:
             if self.show:
                 fps_text = self.clock.get_fps()
                 self.show_fps(fps_text)
-
             self.spaceship.import_image() # create image of spaceship
             self.spaceship.display_score(self.width) 
             self.spaceship.display_remain_life(self.width)
@@ -131,8 +153,7 @@ class gamebasic:
             self.userhealtbar.draw(self.screen) 
             self.enemyhealtbar.update_value(self.enemy.enemy_x,self.enemy.enemy_y)
             self.enemyhealtbar.draw(self.screen)
-
-
+            self.simple_event() 
             self.clock.tick(self.fps)
             pygame.display.flip()
 
