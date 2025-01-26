@@ -28,6 +28,7 @@ class gamebasic:
         self.fps = 60 
         self.after_time = 1000 // 2 # set timer in milli seconds 
         self.show = False
+        self.remaining_life = 5 
         # custem event 
         self.my_event = pygame.USEREVENT + 1 # event for 1 sec 
         # mouse variable 
@@ -67,15 +68,13 @@ class gamebasic:
         self.userhealtbar = healtbar(0,0,100,20,100) # user spaceship healt bar 
         self.enemyhealtbar = healtbar(self.enemy.enemy_x-20,self.enemy.enemy_y,30,5,100) # class of enemy healtbar
 
-
-
     def gameloop(self): 
         self.run = True
         pygame.time.set_timer(self.my_event,self.after_time,loops=1) # start the timer 
         self.call_classes() # call all the classes 
         while self.run:
-            self.screen.fill(color['black']) # set background color to white 
-            self.simple_event()
+            self.screen.fill(color['black']) # set background color to black
+            self.simple_event() 
 
             # get key presss 
             key = pygame.key.get_pressed()
@@ -113,23 +112,26 @@ class gamebasic:
 
             if self.enemy.enemy_y>= self.height: # enemy ship out from screen
                 self.enemyhealtbar.current_hp = 100
+                self.spaceship.remaining_life -= 1 
 
             if self.enemyhealtbar.current_hp <= 0: # if 0
                 self.spaceship.score += 1 
                 self.enemy.choice_image(reset=True) # create a new enemy spaceship 
                 self.enemyhealtbar.current_hp = self.enemyhealtbar.max_hp # reset healtbar
+            
+            # show fps
+            if self.show:
+                fps_text = self.clock.get_fps()
+                self.show_fps(fps_text)
 
             self.spaceship.import_image() # create image of spaceship
             self.spaceship.display_score(self.width) 
+            self.spaceship.display_remain_life(self.width)
             self.enemy.choice_image() # random image choices
             self.userhealtbar.draw(self.screen) 
             self.enemyhealtbar.update_value(self.enemy.enemy_x,self.enemy.enemy_y)
             self.enemyhealtbar.draw(self.screen)
 
-            # show fps
-            if self.show:
-                fps_text = self.clock.get_fps()
-                self.show_fps(fps_text)
 
             self.clock.tick(self.fps)
             pygame.display.flip()
@@ -148,7 +150,6 @@ class healtbar():
         self.x = x 
         self.y = y
 
-
     def draw(self,screen):
         ratio = self.current_hp/self.max_hp
         pygame.draw.rect(screen,color['red'],(self.x,self.y,self.w,self.h)) # full hp rect 
@@ -158,9 +159,10 @@ class spaceship():
     def __init__(self,ship_x, ship_y,screen):
         self.ship_x = ship_x
         self.ship_y = ship_y 
+        self.remaining_life = 5 
         self.ship_size = 150 # use in further
         self.screen = screen  
-        self.score = 0 
+        self.score = 0
         #import image 
         self.ship = pygame.image.load('assests/ship.png').convert_alpha()
         self.ship_mash = pygame.mask.from_surface(self.ship)
@@ -178,6 +180,16 @@ class spaceship():
         self.print_score = pygame.font.SysFont(None,30)
         self.score_surface = self.print_score.render(f"Score:{int(self.score)}",True,color['white'])
         self.screen.blit(self.score_surface,(width-80,10))
+
+    def display_remain_life(self,width):
+        self.show_remain_life = pygame.font.SysFont(None,30)
+        self.remain_life_surface = self.show_remain_life.render(f"Life:{self.remaining_life}",True,color['white'])
+        self.screen.blit(self.remain_life_surface,(width-68,30))
+
+        if self.remaining_life <= 0:
+            print('gameover')
+
+
 
 class bullet():
     def __init__(self,screen,bullet_x,bullet_y):
@@ -200,6 +212,7 @@ class enemy:
         self.width = width
         self.screen = screen
     
+
         self.enemy_list  = [
             pygame.transform.scale(pygame.image.load(f'assests/enemy{i}.png').convert_alpha(),(100,100))
             for i in range(3)
@@ -210,17 +223,20 @@ class enemy:
         self.enemy_y = -self.get_image.get_height() - 20  # start the enemy y to - point        
         self.choice_image()
     
-
     def choice_image(self,reset=False):
         if self.enemy_y > 700 or reset: 
             self.get_image = random.choice(self.enemy_list)
             self.enemy_x = random.randint(0,self.width-70)
             self.enemy_y = -self.get_image.get_height() - 20
+             
+
         self.position = (self.enemy_x,self.enemy_y) 
         self.enemy_mask = pygame.mask.from_surface(self.get_image)
         self.screen.blit(self.get_image,self.position)
         self.enemy_y += 3
-    
+
+
+
 
 game = gamebasic()
 game.gameloop()
