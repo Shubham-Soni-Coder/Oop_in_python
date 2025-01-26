@@ -42,5 +42,6 @@ python main.py
 - **Power-ups**: Introduce power-ups that give temporary advantages.
 - **Multiplayer Mode**: Add a multiplayer mode to compete with friends.
 - **Enhanced Graphics**: Improve the graphics and animations.
+- **Add More Classes**: Create more classes and seperte classes 
 
 Enjoy the game!
