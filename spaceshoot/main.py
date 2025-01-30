@@ -28,9 +28,10 @@ class gamebasic:
         self.fps = 60 
         self.after_time = 1000 // 2 # set timer in milli seconds 
         self.show = False
-        self.remaining_life = 5 
         # custem event 
-        self.my_event = pygame.USEREVENT + 1 # event for 1 sec 
+        self.my_event = pygame.USEREVENT + 1 # event for bullet  
+        self.medkit_show = False
+        self.medkit_event = pygame.USEREVENT + 2 
         # mouse variable 
         self.mouse_press = True
 
@@ -39,7 +40,7 @@ class gamebasic:
 
         # medkit variable 
         self.medkit_x = 20 
-        self.medkit_y = 20 
+        self.medkit_y = 0  
 
     def show_fps(self,fps_text):
 
@@ -56,8 +57,14 @@ class gamebasic:
             elif event.type == self.my_event: # check for my event 
                 self.bullet_list.append(
                     bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12)
-                )     
+                    )     
                 pygame.time.set_timer(self.my_event,self.after_time,loops=1) # make new one in 0.5       
+            elif event.type == self.medkit_event:
+                self.medkit_show = not self.medkit_show
+                self.medkit_y = 0 
+                pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1) # make new one in 7 seconds
+
+
             elif event.type == pygame.KEYDOWN:
                 if event.key==pygame.K_LCTRL: # event of mouse visible or not 
                     self.mouse_press = not self.mouse_press
@@ -120,7 +127,8 @@ class gamebasic:
 
     def gameloop(self): 
         self.run = True
-        pygame.time.set_timer(self.my_event,self.after_time,loops=1) # start the timer 
+        pygame.time.set_timer(self.my_event,self.after_time,loops=1) # start the timer
+        pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1) 
         self.call_classes() # call all the classes 
         while self.run:
             self.screen.fill(color['black']) # set background color to black
@@ -174,17 +182,24 @@ class gamebasic:
                 self.enemy.choice_image(reset=True) # create a new enemy spaceship 
                 self.enemyhealtbar.current_hp = self.enemyhealtbar.max_hp # reset healtbar
             
+
             # check  collision between user spaceship and medkit 
             if self.spaceship.ship_mash.overlap(self.userhealtbar.medkit_mask,
                                                 (self.medkit_x - self.spaceship.ship_x,
                                                 self.medkit_y - self.spaceship.ship_y)):
-                print('found it ')
-
+                if self.userhealtbar.current_hp  < self.userhealtbar.max_hp:
+                    self.medkit_x = random.randint(0,self.width-50)
+                    self.medkit_y = 0
+                    self.userhealtbar.current_hp +=20
+            
             self.medkit_y += 5
+            
             if self.medkit_y >= self.width:
                 self.medkit_x = random.randint(0,self.width-50)
                 self.medkit_y = -50
 
+            if self.medkit_show: 
+                self.userhealtbar.draw_medkit(self.screen,self.medkit_x,self.medkit_y)
             # show fps
             if self.show:
                 fps_text = self.clock.get_fps()
@@ -193,7 +208,6 @@ class gamebasic:
             self.spaceship.display_score(self.width) 
             self.enemy.choice_image() # random image choices
             self.userhealtbar.draw(self.screen) 
-            self.userhealtbar.draw_healt(self.screen,self.medkit_x,self.medkit_y)
             self.enemyhealtbar.update_value(self.enemy.enemy_x,self.enemy.enemy_y)
             self.enemyhealtbar.draw(self.screen)
             self.simple_event() 
@@ -223,7 +237,7 @@ class healtbar():
         pygame.draw.rect(screen,color['red'],(self.x,self.y,self.w,self.h)) # full hp rect 
         pygame.draw.rect(screen,color['green'],(self.x,self.y,self.w*ratio,self.h)) # current hp rect
 
-    def draw_healt(self,screen,medkit_x,medkit_y):
+    def draw_medkit(self,screen,medkit_x,medkit_y):
         screen.blit(self.medkit,(medkit_x,medkit_y))
         medkit_y+= 10 
 class spaceship():
