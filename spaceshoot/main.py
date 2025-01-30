@@ -81,6 +81,14 @@ class gamebasic:
                     game_over = False
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key in [pygame.K_KP_ENTER,pygame.KSCAN_KP_ENTER]:
+                        game_over = False
+                        self.run = True
+                        # self.spaceship.reset()
+                        # self.enemy.reset()
+                        self.gameloop()
+
 
 
     def gameloop(self): 
@@ -92,9 +100,6 @@ class gamebasic:
             if self.userhealtbar.current_hp <= 0:
                 self.after_gameover() # game over
             
-            if self.spaceship.remaining_life <= 0 :
-                self.after_gameover() 
-
             # get key presss     
             key = pygame.key.get_pressed()
             if key[pygame.K_UP] and self.spaceship.ship_y > 0 :
@@ -115,20 +120,23 @@ class gamebasic:
                 if b.mask.overlap(self.enemy.enemy_mask,
                                   (self.enemy.enemy_x - b.bullet_x,
                                    self.enemy.enemy_y - b.bullet_y)):
-                    self.enemyhealtbar.current_hp -= 25
-                    self.bullet_list.remove(b) 
+                    try:
+                        self.enemyhealtbar.current_hp -= 25
+                        self.bullet_list.remove(b) 
+                    except Exception as e:
+                        print(f'Error: {e}')
 
             # check for collision between user spaceship and enemy spaceship
             if self.spaceship.ship_mash.overlap(self.enemy.enemy_mask,
                                                 (self.enemy.enemy_x - self.spaceship.ship_x,
                                                  self.enemy.enemy_y - self.spaceship.ship_y)):
-                self.userhealtbar.current_hp -= 25
+                self.userhealtbar.current_hp -= 20
                 self.enemyhealtbar.current_hp = self.enemyhealtbar.max_hp # reset enemyhealtbar 
                 # Create a new enemy spaceship at a random position
                 self.enemy.choice_image(reset=True)  
             if self.enemy.enemy_y>= self.height: # enemy ship out from screen
                 self.enemyhealtbar.current_hp = 100
-                self.spaceship.remaining_life -= 1 
+                self.userhealtbar.current_hp -=20
             if self.enemyhealtbar.current_hp <= 0: # if 0
                 self.spaceship.score += 1 
                 self.enemy.choice_image(reset=True) # create a new enemy spaceship 
@@ -138,11 +146,8 @@ class gamebasic:
             if self.show:
                 fps_text = self.clock.get_fps()
                 self.show_fps(fps_text)
-
-            # call the methods    
             self.spaceship.import_image() # create image of spaceship
             self.spaceship.display_score(self.width) 
-            self.spaceship.display_remain_life(self.width)
             self.enemy.choice_image() # random image choices
             self.userhealtbar.draw(self.screen) 
             self.enemyhealtbar.update_value(self.enemy.enemy_x,self.enemy.enemy_y)
@@ -174,7 +179,6 @@ class spaceship():
     def __init__(self,ship_x, ship_y,screen):
         self.ship_x = ship_x
         self.ship_y = ship_y 
-        self.remaining_life = 5 
         self.ship_size = 150 # use in further
         self.screen = screen  
         self.score = 0
@@ -196,13 +200,6 @@ class spaceship():
         self.score_surface = self.print_score.render(f"Score:{int(self.score)}",True,color['white'])
         self.screen.blit(self.score_surface,(width-80,10))
 
-    def display_remain_life(self,width):
-        self.show_remain_life = pygame.font.SysFont(None,30)
-        self.remain_life_surface = self.show_remain_life.render(f"Life:{self.remaining_life}",True,color['white'])
-        self.screen.blit(self.remain_life_surface,(width-68,30))
-
-        if self.remaining_life <= 0:
-            print('gameover')
 
 
 
@@ -227,21 +224,20 @@ class enemy:
         self.width = width
         self.screen = screen
     
-
         self.enemy_list  = [
             pygame.transform.scale(pygame.image.load(f'assests/enemy{i}.png').convert_alpha(),(100,100))
             for i in range(3)
         ]
 
         self.get_image = random.choice(self.enemy_list) # choice the image reandom
-        self.enemy_x = random.randint(0,self.width-70) # x random
+        self.enemy_x = random.randint(0,self.width-100) # x random
         self.enemy_y = -self.get_image.get_height() - 20  # start the enemy y to - point        
         self.choice_image()
     
     def choice_image(self,reset=False):
         if self.enemy_y > 700 or reset: 
             self.get_image = random.choice(self.enemy_list)
-            self.enemy_x = random.randint(0,self.width-70)
+            self.enemy_x = random.randint(0,self.width-100)
             self.enemy_y = -self.get_image.get_height() - 20
              
 
@@ -249,6 +245,9 @@ class enemy:
         self.enemy_mask = pygame.mask.from_surface(self.get_image)
         self.screen.blit(self.get_image,self.position)
         self.enemy_y += 3
+
+
+
 
 game = gamebasic()
 game.gameloop()

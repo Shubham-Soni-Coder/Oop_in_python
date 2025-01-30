@@ -123,8 +123,11 @@ class gamebasic:
                 if b.mask.overlap(self.enemy.enemy_mask,
                                   (self.enemy.enemy_x - b.bullet_x,
                                    self.enemy.enemy_y - b.bullet_y)):
-                    self.enemyhealtbar.current_hp -= 25
-                    self.bullet_list.remove(b) 
+                    try:
+                        self.enemyhealtbar.current_hp -= 25 * 2
+                        self.bullet_list.remove(b) 
+                    except Exception as e:
+                        print(f'Error: {e}')
 
             # check for collision between user spaceship and enemy spaceship
             if self.spaceship.ship_mash.overlap(self.enemy.enemy_mask,
@@ -233,21 +236,20 @@ class enemy:
         self.width = width
         self.screen = screen
     
-
         self.enemy_list  = [
             pygame.transform.scale(pygame.image.load(f'assests/enemy{i}.png').convert_alpha(),(100,100))
             for i in range(3)
         ]
 
         self.get_image = random.choice(self.enemy_list) # choice the image reandom
-        self.enemy_x = random.randint(0,self.width-70) # x random
+        self.enemy_x = random.randint(0,self.width-100) # x random
         self.enemy_y = -self.get_image.get_height() - 20  # start the enemy y to - point        
         self.choice_image()
     
     def choice_image(self,reset=False):
         if self.enemy_y > 700 or reset: 
             self.get_image = random.choice(self.enemy_list)
-            self.enemy_x = random.randint(0,self.width-70)
+            self.enemy_x = random.randint(0,self.width-100)
             self.enemy_y = -self.get_image.get_height() - 20
              
 
