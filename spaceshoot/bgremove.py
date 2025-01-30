@@ -16,8 +16,8 @@ def remove_background(input_image_path,output_image_path):
 
 if __name__ == "__main__":
     # Input and output image file paths
-    input_path =  'enemy.png' # Replace with your input image path
-    output_path = 'temp.png'# Output as PNG to retain transparency
+    input_path =  'assests/medkit.jpg' # Replace with your input image path
+    output_path = 'assests/temp.png'# Output as PNG to retain transparency
 
     # Remove background
     remove_background(input_path,output_path)

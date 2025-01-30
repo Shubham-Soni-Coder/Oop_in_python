@@ -37,6 +37,10 @@ class gamebasic:
         # bullet management 
         self.bullet_list = []   
 
+        # medkit variable 
+        self.medkit_x = 20 
+        self.medkit_y = 20 
+
     def show_fps(self,fps_text):
 
         font = pygame.font.SysFont(None, 30)
@@ -170,6 +174,17 @@ class gamebasic:
                 self.enemy.choice_image(reset=True) # create a new enemy spaceship 
                 self.enemyhealtbar.current_hp = self.enemyhealtbar.max_hp # reset healtbar
             
+            # check  collision between user spaceship and medkit 
+            if self.spaceship.ship_mash.overlap(self.userhealtbar.medkit_mask,
+                                                (self.medkit_x - self.spaceship.ship_x,
+                                                self.medkit_y - self.spaceship.ship_y)):
+                print('found it ')
+
+            self.medkit_y += 5
+            if self.medkit_y >= self.width:
+                self.medkit_x = random.randint(0,self.width-50)
+                self.medkit_y = -50
+
             # show fps
             if self.show:
                 fps_text = self.clock.get_fps()
@@ -178,6 +193,7 @@ class gamebasic:
             self.spaceship.display_score(self.width) 
             self.enemy.choice_image() # random image choices
             self.userhealtbar.draw(self.screen) 
+            self.userhealtbar.draw_healt(self.screen,self.medkit_x,self.medkit_y)
             self.enemyhealtbar.update_value(self.enemy.enemy_x,self.enemy.enemy_y)
             self.enemyhealtbar.draw(self.screen)
             self.simple_event() 
@@ -194,6 +210,10 @@ class healtbar():
         self.current_hp = max_hp  # set the current hp to max_hp 
         self.max_hp = max_hp
 
+        self.medkit = pygame.image.load('assests/medkit.png').convert_alpha()
+        self.medkit = pygame.transform.scale(self.medkit,(50,50))
+        self.medkit_mask = pygame.mask.from_surface(self.medkit)
+
     def update_value(self,x,y): # update the x and y coodinte in main loop
         self.x = x 
         self.y = y
@@ -203,6 +223,9 @@ class healtbar():
         pygame.draw.rect(screen,color['red'],(self.x,self.y,self.w,self.h)) # full hp rect 
         pygame.draw.rect(screen,color['green'],(self.x,self.y,self.w*ratio,self.h)) # current hp rect
 
+    def draw_healt(self,screen,medkit_x,medkit_y):
+        screen.blit(self.medkit,(medkit_x,medkit_y))
+        medkit_y+= 10 
 class spaceship():
     def __init__(self,ship_x, ship_y,screen):
         self.ship_x = ship_x
