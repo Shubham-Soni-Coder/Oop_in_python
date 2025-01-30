@@ -275,7 +275,6 @@ class enemy:
         self.enemy_y += 3
 
 
-
+maingame = gamebasic()
 if __name__=="__main__":
-    game = gamebasic()
-    game.gameloop()
+    maingame.gameloop()
