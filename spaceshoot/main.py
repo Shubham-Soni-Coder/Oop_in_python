@@ -124,7 +124,7 @@ class gamebasic:
                 self.after_gameover() # game over
         
 
-            if self.spaceship.score == 5:
+            if self.spaceship.score == 15:
                 self.after_win() # win the game
 
             # get key presss     
