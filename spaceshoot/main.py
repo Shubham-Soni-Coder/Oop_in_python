@@ -3,7 +3,6 @@ import random
 import os 
 import sys
 
-
 pygame.init()
 
 # define all color
@@ -14,14 +13,12 @@ color = {
             'green': (0,255,0),
             'black':(0,0,0)
         }
-
 class gamebasic:
     def __init__(self,width=900,height=700):
         self.width = width
         self.height = height 
         self.screen =  pygame.display.set_mode((self.width,self.height))
         pygame.display.set_caption('spacegame') # set title
-
         # game varible
         self.run = False
         self.clock = pygame.time.Clock() 
@@ -34,16 +31,13 @@ class gamebasic:
         self.medkit_event = pygame.USEREVENT + 2 
         # mouse variable 
         self.mouse_press = True
-
         # bullet management 
         self.bullet_list = []   
-
         # medkit variable 
         self.medkit_x = 20 
         self.medkit_y = 0  
 
     def show_fps(self,fps_text):
-
         font = pygame.font.SysFont(None, 30)
         fps_surface = font.render(f'FPS: {int(fps_text)}', True, color['white'])
         self.screen.blit(fps_surface, (10, 20))
@@ -59,19 +53,16 @@ class gamebasic:
                     bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12)
                     )     
                 pygame.time.set_timer(self.my_event,self.after_time,loops=1) # make new one in 0.5       
-            elif event.type == self.medkit_event:
+            elif event.type == self.medkit_event: # check for medkit event 
                 self.medkit_show = not self.medkit_show
                 self.medkit_y = 0 
                 pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1) # make new one in 7 seconds
-
-
             elif event.type == pygame.KEYDOWN:
                 if event.key==pygame.K_LCTRL: # event of mouse visible or not 
                     self.mouse_press = not self.mouse_press
                     pygame.mouse.set_visible(self.mouse_press)
-                if event.key==pygame.K_SPACE:
+                if event.key==pygame.K_SPACE: # event for show fps 
                     self.show = not self.show
-
     def call_classes(self):
         self.spaceship = spaceship(self.height//2,self.width//2, self.screen) # Call the spaceship class
         self.enemy = enemy(self.height,self.width,self.screen) # call the enemy class
@@ -96,16 +87,12 @@ class gamebasic:
                     if event.key in [pygame.K_KP_ENTER,pygame.KSCAN_KP_ENTER]:
                         game_over = False
                         self.run = True
-                        # self.spaceship.reset()
-                        # self.enemy.reset()
                         self.gameloop()
-
     def after_win(self):
         self.run = False
         ship = self.spaceship.ship
         ship_x =self.spaceship.ship_x
         ship_y = self.spaceship.ship_y  
-
         win = True
         while win:
             self.screen.fill(color['black']) # set background color to black
@@ -117,30 +104,27 @@ class gamebasic:
             self.screen.blit(ship,(ship_x,ship_y)) 
             self.clock.tick(self.fps)
             ship_y -= 10
-
             if ship_y < 0 :
                 print_line = pygame.font.SysFont(False,40)
-                text = print_line.render('You Win',True,'Green')
-                self.screen.blit(text,(self.width/2,self.height/2))   
+                text = print_line.render('You Win this level',True,'Green')
+                self.screen.blit(text,(self.height/2,self.width/2))   
             pygame.display.update()
-
 
     def gameloop(self): 
         self.run = True
-        pygame.time.set_timer(self.my_event,self.after_time,loops=1) # start the timer
-        pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1) 
+        pygame.time.set_timer(self.my_event,self.after_time,loops=1)# timer for bullet
+        pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1)# timer for medkit 
         self.call_classes() # call all the classes 
         while self.run:
             self.screen.fill(color['black']) # set background color to black
             if self.userhealtbar.current_hp <= 0:
                 self.after_gameover() # game over
         
-
             if self.spaceship.score == 15:
                 self.after_win() # win the game
 
-            # get key presss     
-            key = pygame.key.get_pressed()
+            # Keys event      
+            key = pygame.key.get_pressed() # key pressed 
             if key[pygame.K_UP] and self.spaceship.ship_y > 0 :
                 self.spaceship.move(0,-7)
             elif key[pygame.K_DOWN]and self.spaceship.ship_y < self.height- self.spaceship.ship_size:
@@ -171,18 +155,16 @@ class gamebasic:
                                                  self.enemy.enemy_y - self.spaceship.ship_y)):
                 self.userhealtbar.current_hp -= 20
                 self.enemyhealtbar.current_hp = self.enemyhealtbar.max_hp # reset enemyhealtbar 
-                # Create a new enemy spaceship at a random position
-                self.enemy.choice_image(reset=True)  
+                self.enemy.choice_image(reset=True)  # create enemy spaceship at random position 
             if self.enemy.enemy_y>= self.height: # enemy ship out from screen
                 self.enemyhealtbar.current_hp = 100
                 self.userhealtbar.current_hp -= 20 
 
-            if self.enemyhealtbar.current_hp <= 0: # if 0
+            if self.enemyhealtbar.current_hp <= 0:
                 self.spaceship.score += 1 
                 self.enemy.choice_image(reset=True) # create a new enemy spaceship 
                 self.enemyhealtbar.current_hp = self.enemyhealtbar.max_hp # reset healtbar
             
-
             # check  collision between user spaceship and medkit 
             if self.spaceship.ship_mash.overlap(self.userhealtbar.medkit_mask,
                                                 (self.medkit_x - self.spaceship.ship_x,
@@ -204,6 +186,7 @@ class gamebasic:
             if self.show:
                 fps_text = self.clock.get_fps()
                 self.show_fps(fps_text)
+         
             self.spaceship.import_image() # create image of spaceship
             self.spaceship.display_score(self.width) 
             self.enemy.choice_image() # random image choices
@@ -265,9 +248,6 @@ class spaceship():
         self.score_surface = self.print_score.render(f"Score:{int(self.score)}",True,color['white'])
         self.screen.blit(self.score_surface,(width-80,10))
 
-
-
-
 class bullet():
     def __init__(self,screen,bullet_x,bullet_y):
         self.bullet_x = bullet_x
@@ -305,12 +285,10 @@ class enemy:
             self.enemy_x = random.randint(0,self.width-100)
             self.enemy_y = -self.get_image.get_height() - 20
              
-
         self.position = (self.enemy_x,self.enemy_y) 
         self.enemy_mask = pygame.mask.from_surface(self.get_image)
         self.screen.blit(self.get_image,self.position)
         self.enemy_y += 3
-
 
 maingame = gamebasic()
 if __name__=="__main__":
