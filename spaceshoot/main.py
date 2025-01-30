@@ -89,6 +89,29 @@ class gamebasic:
                         # self.enemy.reset()
                         self.gameloop()
 
+    def after_win(self):
+        self.run = False
+        ship = self.spaceship.ship
+        ship_x =self.spaceship.ship_x
+        ship_y = self.spaceship.ship_y  
+
+        win = True
+        while win:
+            self.screen.fill(color['black']) # set background color to black
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    win = False
+                    pygame.quit()
+                    sys.exit()
+            self.screen.blit(ship,(ship_x,ship_y)) 
+            self.clock.tick(self.fps)
+            ship_y -= 10
+
+            if ship_y < 0 :
+                print_line = pygame.font.SysFont(False,40)
+                text = print_line.render('You Win',True,'Green')
+                self.screen.blit(text,(self.width/2,self.height/2))   
+            pygame.display.update()
 
 
     def gameloop(self): 
@@ -99,17 +122,21 @@ class gamebasic:
             self.screen.fill(color['black']) # set background color to black
             if self.userhealtbar.current_hp <= 0:
                 self.after_gameover() # game over
-            
+        
+
+            if self.spaceship.score == 5:
+                self.after_win() # win the game
+
             # get key presss     
             key = pygame.key.get_pressed()
             if key[pygame.K_UP] and self.spaceship.ship_y > 0 :
-                self.spaceship.move(0,-10)
+                self.spaceship.move(0,-7)
             elif key[pygame.K_DOWN]and self.spaceship.ship_y < self.height- self.spaceship.ship_size:
-                self.spaceship.move(0,10)
+                self.spaceship.move(0,7)
             elif key[pygame.K_LEFT] and self.spaceship.ship_x>0:
-                self.spaceship.move(-10,0)
+                self.spaceship.move(-7,0)
             elif key[pygame.K_RIGHT] and self.spaceship.ship_x<self.width - self.spaceship.ship_size:
-                self.spaceship.move(10,0)  
+                self.spaceship.move(7,0)  
             # update and draw bullet 
             for b in self.bullet_list[:]:
                 b.update()
@@ -121,7 +148,7 @@ class gamebasic:
                                   (self.enemy.enemy_x - b.bullet_x,
                                    self.enemy.enemy_y - b.bullet_y)):
                     try:
-                        self.enemyhealtbar.current_hp -= 25
+                        self.enemyhealtbar.current_hp -= 25 * 2
                         self.bullet_list.remove(b) 
                     except Exception as e:
                         print(f'Error: {e}')
@@ -136,7 +163,8 @@ class gamebasic:
                 self.enemy.choice_image(reset=True)  
             if self.enemy.enemy_y>= self.height: # enemy ship out from screen
                 self.enemyhealtbar.current_hp = 100
-                self.userhealtbar.current_hp -=20
+                self.userhealtbar.current_hp -= 20 
+
             if self.enemyhealtbar.current_hp <= 0: # if 0
                 self.spaceship.score += 1 
                 self.enemy.choice_image(reset=True) # create a new enemy spaceship 
@@ -248,6 +276,6 @@ class enemy:
 
 
 
-
-game = gamebasic()
-game.gameloop()
+if __name__=="__main__":
+    game = gamebasic()
+    game.gameloop()
