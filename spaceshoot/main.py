@@ -102,25 +102,27 @@ class gamebasic:
     def after_win(self):
         self.run = False
         ship = self.spaceship.ship
-        ship_x =self.spaceship.ship_x
+        ship_x = self.spaceship.ship_x
         ship_y = self.spaceship.ship_y  
+        text = pygame.font.SysFont('Lucida Handwriting', 50)
+        text_show = text.render("Congratulation", True, color['green'])
+        text_show2 = text.render("You won this level!", True, color['green'])  # New line added
         win = True
         while win:
-            self.screen.fill(color['black']) # set background color to black
+            self.screen.fill(color['black'])  # set background color to black
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     win = False
                     pygame.quit()
                     sys.exit()
-            self.screen.blit(ship,(ship_x,ship_y)) 
+            self.screen.blit(ship, (ship_x, ship_y)) 
             self.clock.tick(self.fps)
             ship_y -= 10
-            if ship_y < 0 :
-                print_line = pygame.font.SysFont(False,40)
-                text1 = print_line.render('Conguration',True,'Green')
-                text = print_line.render('You Win this level',True,'Green')
-                self.screen.blit(text,(self.height/2,self.width/2))   
-                self.screen.blit(text1,(self.height/2+50,self.width/2+50))   
+            if ship_y < -20:
+                text_rect = text_show.get_rect(center=(self.width / 2, self.height / 2))
+                text_rect2 = text_show2.get_rect(center=(self.width / 2, self.height / 2 + 60))  # New line added
+                self.screen.blit(text_show, text_rect)
+                self.screen.blit(text_show2, text_rect2)  # New line added
             pygame.display.update()
 
     def gameloop(self): 
@@ -134,7 +136,7 @@ class gamebasic:
             if self.userhealtbar.current_hp <= 0:
                 self.after_gameover() # game over
         
-            if self.spaceship.score == 15:
+            if self.spaceship.score == 15-12:
                 self.after_win() # win the game
 
             # Keys event      
