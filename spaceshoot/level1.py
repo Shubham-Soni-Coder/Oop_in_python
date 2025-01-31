@@ -1,6 +1,6 @@
 import pygame
 import sys
-from main import maingame
+from gamelogic import maingame
 
 pygame.init()
 
