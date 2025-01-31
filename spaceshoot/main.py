@@ -34,8 +34,14 @@ class gamebasic:
         # bullet management 
         self.bullet_list = []   
         # medkit variable 
-        self.medkit_x = 20 
-        self.medkit_y = 0  
+        self.medkit_x = random.randint(20,self.width-50)
+        self.medkit_y = random.randint(20,self.height)  
+
+        # image call
+        self.bgimage = pygame.image.load('assests/bg.png')
+        self.gameover = pygame.image.load('assests/gameover.jpg')
+        self.gameover = pygame.transform.scale(self.gameover,(self.width,self.height))
+
 
     def show_fps(self,fps_text):
         font = pygame.font.SysFont(None, 30)
@@ -55,7 +61,8 @@ class gamebasic:
                 pygame.time.set_timer(self.my_event,self.after_time,loops=1) # make new one in 0.5       
             elif event.type == self.medkit_event: # check for medkit event 
                 self.medkit_show = not self.medkit_show
-                self.medkit_y = 0 
+                self.medkit_x = random.randint(20,self.width-50)
+                self.medkit_y = random.randint(20,self.height)
                 pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1) # make new one in 7 seconds
             elif event.type == pygame.KEYDOWN:
                 if event.key==pygame.K_LCTRL: # event of mouse visible or not 
@@ -72,9 +79,10 @@ class gamebasic:
 
     def after_gameover(self):
         self.run = False
-        font = pygame.font.SysFont(None, 60)
-        textsurface = font.render('Game Over', True, color['white'])
-        self.screen.blit(textsurface, (self.width//2-100, self.height//2))
+        font = pygame.font.SysFont(None, 40)
+        textsurface = font.render(f'Score:{self.spaceship.score}', True, color['white'])
+        self.screen.blit(self.gameover,(0,0))
+        self.screen.blit(textsurface, (self.width//2-55, self.height-100))
         pygame.display.update()
         game_over = True
         while game_over:
@@ -171,14 +179,12 @@ class gamebasic:
                                                 self.medkit_y - self.spaceship.ship_y)):
                 if self.userhealtbar.current_hp  < self.userhealtbar.max_hp:
                     self.medkit_x = random.randint(0,self.width-50)
-                    self.medkit_y = 0
+                    self.medkit_y = random.randint(20,self.height)
                     self.userhealtbar.current_hp +=20
-            
-            self.medkit_y += 5
             
             if self.medkit_y >= self.width:
                 self.medkit_x = random.randint(0,self.width-50)
-                self.medkit_y = -50
+                self.medkit_y = random.randint(20,self.height)
 
             if self.medkit_show: 
                 self.userhealtbar.draw_medkit(self.screen,self.medkit_x,self.medkit_y)
