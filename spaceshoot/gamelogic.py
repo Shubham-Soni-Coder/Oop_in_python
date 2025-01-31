@@ -136,7 +136,7 @@ class gamebasic:
             if self.userhealtbar.current_hp <= 0:
                 self.after_gameover() # game over
         
-            if self.spaceship.score == 15-12:
+            if self.spaceship.score == 15:
                 self.after_win() # win the game
 
             # Keys event      

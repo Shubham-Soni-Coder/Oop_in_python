@@ -8,7 +8,7 @@ Space Shoot is an exciting arcade-style game developed using Pygame. The objecti
 - **Shooting Mechanism**: Shoot bullets to destroy enemy ships.
 - **Enemy Waves**: Face waves of enemies with increasing difficulty.
 - **Health Bars**: Monitor the health of your spaceship and enemies.
-- **Score Tracking**: Keep track of your score and aim for the highest score.
+- **Score Tracking**: Keep track of your score and aim for Level complete.
 - **FPS Display**: Show the current FPS by pressing the space bar.
 - **Mouse Visibility**: Toggle mouse visibility by pressing the left control key (LCTRL).
 
@@ -21,21 +21,22 @@ Space Shoot is an exciting arcade-style game developed using Pygame. The objecti
 ## How to Run
 
 1. Ensure you have Python and Pygame installed.
-2. Run the `main.py` file to start the game.
+2. Run the `level1.py` file to start the game.
 
 ```bash
-python main.py
+python level1.py
 ```
+
+*Note: As the game is still under development, only one level has been created. Use the `level1.py` file to play this level.*
 
 ## Files
 
-- `main.py`: The main game logic.
+- `level1.py`: The main game logic.
 - `assests/ship.png`: The image of the player's spaceship.
-- `assests/enemy0.png`, `assests/enemy1.png`, `assests/enemy2.png`: Images of the enemy ships.
+- `assests/enemy0.png`, `assests/enemy1.png`, `assests/enemy2.png`: Images of the enemy 
+- 'assests/gameover.jpg' : gameover image 
 - `assests/bullet.png`: The image of the bullets.
-- `try.py`, `try2.py`: Test files, you can delete them.
-- `scrollbg.py`: Feature changes.
-- `bgremove.py`: Remove the background from the image.
+- `try2.py`: Test files, you can delete them.
 
 ## Future Improvements
 
@@ -54,6 +55,6 @@ python main.py
 
 For any bugs or issues, please contact me on GitHub.
 
-For suggestions or anything else, contact me on Instagram at code_with_shubham.
+For suggestions or anything else, contact me on Instagram at code_with_Shubham.
 
 Enjoy the game!
