@@ -3,6 +3,8 @@ import random
 import os 
 import sys
 
+
+pygame.mixer.pre_init(44100,-16,2,512)
 pygame.init()
 
 # define all color
@@ -37,11 +39,8 @@ class gamebasic:
         self.medkit_x = random.randint(20,self.width-50)
         self.medkit_y = random.randint(20,self.height)  
 
-        # image call
-        self.bgimage = pygame.image.load('assests/bg.png')
-        self.gameover = pygame.image.load('assests/gameover.jpg')
-        self.gameover = pygame.transform.scale(self.gameover,(self.width,self.height))
-
+        # music album
+        # self.bulletsound = pygame.mixer.Sound('assests/bullet.wav')
 
     def show_fps(self,fps_text):
         font = pygame.font.SysFont(None, 30)
@@ -54,7 +53,8 @@ class gamebasic:
                 self.run = False
                 pygame.quit()
                 sys.exit()   
-            elif event.type == self.my_event: # check for my event 
+            elif event.type == self.my_event: # check for my event
+                # self.bulletsound.play() # play bullet sound 
                 self.bullet_list.append(
                     bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12)
                     )     
@@ -78,6 +78,9 @@ class gamebasic:
         self.enemyhealtbar = healtbar(self.enemy.enemy_x-20,self.enemy.enemy_y,30,5,100) # class of enemy healtbar
 
     def after_gameover(self):
+        # iamge of gameover
+        self.gameover = pygame.image.load('assests/gameover.jpg')
+        self.gameover = pygame.transform.scale(self.gameover,(self.width,self.height))
         self.run = False
         font = pygame.font.SysFont(None, 40)
         textsurface = font.render(f'Score:{self.spaceship.score}', True, color['white'])
@@ -114,8 +117,10 @@ class gamebasic:
             ship_y -= 10
             if ship_y < 0 :
                 print_line = pygame.font.SysFont(False,40)
+                text1 = print_line.render('Conguration',True,'Green')
                 text = print_line.render('You Win this level',True,'Green')
                 self.screen.blit(text,(self.height/2,self.width/2))   
+                self.screen.blit(text1,(self.height/2+50,self.width/2+50))   
             pygame.display.update()
 
     def gameloop(self): 
@@ -124,6 +129,7 @@ class gamebasic:
         pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1)# timer for medkit 
         self.call_classes() # call all the classes 
         while self.run:
+
             self.screen.fill(color['black']) # set background color to black
             if self.userhealtbar.current_hp <= 0:
                 self.after_gameover() # game over
@@ -152,7 +158,7 @@ class gamebasic:
                                   (self.enemy.enemy_x - b.bullet_x,
                                    self.enemy.enemy_y - b.bullet_y)):
                     try:
-                        self.enemyhealtbar.current_hp -= 25 * 2
+                        self.enemyhealtbar.current_hp -= 40
                         self.bullet_list.remove(b) 
                     except Exception as e:
                         print(f'Error: {e}')
@@ -178,14 +184,8 @@ class gamebasic:
                                                 (self.medkit_x - self.spaceship.ship_x,
                                                 self.medkit_y - self.spaceship.ship_y)):
                 if self.userhealtbar.current_hp  < self.userhealtbar.max_hp:
-                    self.medkit_x = random.randint(0,self.width-50)
-                    self.medkit_y = random.randint(20,self.height)
                     self.userhealtbar.current_hp +=20
-            
-            if self.medkit_y >= self.width:
-                self.medkit_x = random.randint(0,self.width-50)
-                self.medkit_y = random.randint(20,self.height)
-
+                    self.medkit_y = -50
             if self.medkit_show: 
                 self.userhealtbar.draw_medkit(self.screen,self.medkit_x,self.medkit_y)
             # show fps
