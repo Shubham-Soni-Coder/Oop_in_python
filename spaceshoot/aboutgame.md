@@ -2,10 +2,6 @@
 
 Space Shoot is an exciting arcade-style game developed using Pygame. The objective of the game is to control a spaceship, avoid enemy ships, and shoot them down to score points. The game features dynamic gameplay, various enemies, and power-ups to enhance the player's experience.
 
-## Storyline
-
-In Space Shoot, you are the last hope for humanity. As the captain of the spaceship, your mission is to defend Earth from an alien invasion. Navigate through space, destroy enemy ships, and collect power-ups to upgrade your spaceship. The fate of the planet rests in your hands!
-
 ## Features
 
 - **Spaceship Control**: Navigate your spaceship using the arrow keys.
@@ -41,7 +37,6 @@ python level1.py
 - 'assests/gameover.jpg' : gameover image 
 - `assests/bullet.png`: The image of the bullets.
 - `try2.py`: Test files, you can delete them.
-- `bgremove.py`: A file to remove background; you can choose to delete it or keep it as needed.
 
 ## Future Improvements
 
@@ -51,8 +46,6 @@ python level1.py
 - **Enhanced Graphics**: Improve the graphics and animations.
 - **More Classes**: Refactor the code to include more classes for better organization.
 - **Improved Physics**: Enhance the physics for more realistic interactions.
-- **Story Mode**: Develop a story mode with a compelling narrative and missions.
-- **Boss Battles**: Introduce challenging boss battles at the end of each level.
 
 ## Highlight
 
