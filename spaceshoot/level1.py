@@ -19,6 +19,7 @@ color = {
     'green': (0, 255, 0),
 }
 
+
 # Set up font with a specific style
 font = pygame.font.SysFont('Comic Sans MS', 40)
 button_font = pygame.font.SysFont('Comic Sans MS', 30)
@@ -39,7 +40,7 @@ cursor = pygame.cursors.Cursor((0,0),hand_cursor)
 arrow_cursor = pygame.cursors.arrow
 
 pygame.mouse.set_visible(True)
-
+maingame.gameloop_sound.play()
 # Main loop
 def gameloop():
     start = True
@@ -52,6 +53,8 @@ def gameloop():
         if Key[pygame.K_KP_ENTER]:
             is_howered = True
             start = False
+            maingame.gameloop_sound.stop()
+            maingame.gamestart.play()
             maingame.gameloop()
 
         pygame.mouse.set_cursor(*cursor) if is_howered else pygame.mouse.set_cursor(*arrow_cursor)

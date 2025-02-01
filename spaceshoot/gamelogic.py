@@ -45,8 +45,10 @@ class gamebasic:
         self.bullethit = pygame.mixer.Sound('assests/bullethit.mp3')
         self.medkit_effect = pygame.mixer.Sound('assests/medkit_effect.mp3')
         self.levelup = pygame.mixer.Sound('assests/levelup.mp3')
-
-
+        self.gameover_effect = pygame.mixer.Sound('assests/gameover.mp3')
+        self.gamestart = pygame.mixer.Sound('assests/gamestart.wav')
+        self.gameloop_sound = pygame.mixer.Sound('assests/gameloop.mp3')
+        self.hitsound = pygame.mixer.Sound('assests/hitsound.mp3')
     def show_fps(self,fps_text):
         font = pygame.font.SysFont(None, 30)
         fps_surface = font.render(f'FPS: {int(fps_text)}', True, color['white'])
@@ -86,6 +88,8 @@ class gamebasic:
         # iamge of gameover
         self.gameover = pygame.image.load('assests/gameover.jpg')
         self.gameover = pygame.transform.scale(self.gameover,(self.width,self.height))
+        
+        self.gameover_effect.play()
         self.run = False
         font = pygame.font.SysFont(None, 40)
         textsurface = font.render(f'Score:{self.spaceship.score}', True, color['white'])
@@ -103,6 +107,8 @@ class gamebasic:
                     if event.key in [pygame.K_KP_ENTER,pygame.KSCAN_KP_ENTER]:
                         game_over = False
                         self.run = True
+                        self.gameover_effect.stop()
+                        self.gamestart.play()               
                         pygame.mouse.set_visible(self.mouse_visible)
                         self.gameloop()
     def after_win(self):
@@ -179,10 +185,12 @@ class gamebasic:
             if self.spaceship.ship_mash.overlap(self.enemy.enemy_mask,
                                                 (self.enemy.enemy_x - self.spaceship.ship_x,
                                                  self.enemy.enemy_y - self.spaceship.ship_y)):
+                self.hitsound.play()
                 self.userhealtbar.current_hp -= 20
                 self.enemyhealtbar.current_hp = self.enemyhealtbar.max_hp # reset enemyhealtbar 
                 self.enemy.choice_image(reset=True)  # create enemy spaceship at random position 
             if self.enemy.enemy_y>= self.height: # enemy ship out from screen
+                self.hitsound.play()
                 self.enemyhealtbar.current_hp = 100
                 self.userhealtbar.current_hp -= 20 
 
