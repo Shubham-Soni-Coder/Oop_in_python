@@ -32,7 +32,8 @@ class gamebasic:
         self.medkit_show = False
         self.medkit_event = pygame.USEREVENT + 2 
         # mouse variable 
-        self.mouse_press = True
+        self.mouse_visible = False
+        pygame.mouse.set_visible(self.mouse_visible)
         # bullet management 
         self.bullet_list = []   
         # medkit variable 
@@ -66,8 +67,8 @@ class gamebasic:
                 pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1) # make new one in 7 seconds
             elif event.type == pygame.KEYDOWN:
                 if event.key==pygame.K_LCTRL: # event of mouse visible or not 
-                    self.mouse_press = not self.mouse_press
-                    pygame.mouse.set_visible(self.mouse_press)
+                   self.mouse_visible = not self.mouse_visible
+                   pygame.mouse.set_visible(self.mouse_visible)
                 if event.key==pygame.K_SPACE: # event for show fps 
                     self.show = not self.show
     def call_classes(self):
@@ -98,6 +99,7 @@ class gamebasic:
                     if event.key in [pygame.K_KP_ENTER,pygame.KSCAN_KP_ENTER]:
                         game_over = False
                         self.run = True
+                        pygame.mouse.set_visible(self.mouse_visible)
                         self.gameloop()
     def after_win(self):
         self.run = False
@@ -134,9 +136,11 @@ class gamebasic:
 
             self.screen.fill(color['black']) # set background color to black
             if self.userhealtbar.current_hp <= 0:
+                pygame.mouse.set_visible(True)
                 self.after_gameover() # game over
         
             if self.spaceship.score == 15:
+                pygame.mouse.set_visible(True) # change visiblily of mouse
                 self.after_win() # win the game
 
             # Keys event      

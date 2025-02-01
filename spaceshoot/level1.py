@@ -31,6 +31,15 @@ button_text = button_font.render('OK', True, color['black'])
 # Button dimensions
 button_rect = pygame.Rect(350, 500, 200, 60)
 
+# mouse cursors 
+hand_cursor = pygame.image.load('assests/hand_cursar.png')
+hand_cursor = pygame.transform.scale(hand_cursor,(20,20))
+cursor = pygame.cursors.Cursor((0,0),hand_cursor)
+
+arrow_cursor = pygame.cursors.arrow
+
+pygame.mouse.set_visible(True)
+
 # Main loop
 def gameloop():
     start = True
@@ -45,6 +54,9 @@ def gameloop():
             start = False
             maingame.gameloop()
 
+        pygame.mouse.set_cursor(*cursor) if is_howered else pygame.mouse.set_cursor(*arrow_cursor)
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 start = False
@@ -53,7 +65,10 @@ def gameloop():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(event.pos):
                     start = False
+                    pygame.mouse.set_visible(False)
+                    pygame.mouse.set_cursor(*arrow_cursor)
                     maingame.gameloop()
+            
 
         # Fill the screen with black
         screen.fill(color['black'])
