@@ -41,7 +41,11 @@ class gamebasic:
         self.medkit_y = random.randint(20,self.height)  
 
         # music album
-        # self.bulletsound = pygame.mixer.Sound('assests/bullet.wav')
+        self.bulletsound = pygame.mixer.Sound('assests/bulletfire.wav')
+        self.bullethit = pygame.mixer.Sound('assests/bullethit.mp3')
+        self.medkit_effect = pygame.mixer.Sound('assests/medkit_effect.mp3')
+        self.levelup = pygame.mixer.Sound('assests/levelup.mp3')
+
 
     def show_fps(self,fps_text):
         font = pygame.font.SysFont(None, 30)
@@ -55,7 +59,7 @@ class gamebasic:
                 pygame.quit()
                 sys.exit()   
             elif event.type == self.my_event: # check for my event
-                # self.bulletsound.play() # play bullet sound 
+                self.bulletsound.play() # play bullet sound 
                 self.bullet_list.append(
                     bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12)
                     )     
@@ -103,6 +107,7 @@ class gamebasic:
                         self.gameloop()
     def after_win(self):
         self.run = False
+        self.levelup.play()
         ship = self.spaceship.ship
         ship_x = self.spaceship.ship_x
         ship_y = self.spaceship.ship_y  
@@ -164,6 +169,7 @@ class gamebasic:
                                   (self.enemy.enemy_x - b.bullet_x,
                                    self.enemy.enemy_y - b.bullet_y)):
                     try:
+                        self.bullethit.play()
                         self.enemyhealtbar.current_hp -= 40
                         self.bullet_list.remove(b) 
                     except Exception as e:
@@ -190,6 +196,7 @@ class gamebasic:
                                                 (self.medkit_x - self.spaceship.ship_x,
                                                 self.medkit_y - self.spaceship.ship_y)):
                 if self.userhealtbar.current_hp  < self.userhealtbar.max_hp:
+                    self.medkit_effect.play()
                     self.userhealtbar.current_hp +=20
                     self.medkit_y = -50
             if self.medkit_show: 
