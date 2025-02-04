@@ -1,11 +1,14 @@
 import tkinter as tk
+from PIL import Image,ImageTk
 
 def on_click(event):
     canvas.itemconfig(circle,fill='gray')
 
-def on_relase(event):
-    canvas.itemconfig(circle,fill='blue')
-    print('Hello User')
+def on_release(event):
+    canvas.itemconfig(circle, fill='blue')
+    from level1 import start_game
+    start_game()  # Start the game loop
+
 def on_enter(event): # event for enter positon of mouse in button
     canvas.config(cursor='hand2')
 
@@ -21,11 +24,27 @@ root = tk.Tk()
 root.title("Circular Button")
 root.geometry(f"{width}x{height}")
 
-canvas = tk.Canvas(root, width=width, height=height, bg="white", highlightthickness=0)
+
+# create a canvas 
+canvas = tk.Canvas(root, width=width, height=height, bg="white", highlightthickness=5)
 canvas.pack()
 
+# load image 
+image = Image.open('assests/bg.jpg')
+
+# resize image
+image = image.resize((width,height))
+
+# convert image to tkinter image
+
+tk_image = ImageTk.PhotoImage(image)
+
+# Create a label to display the image
+
+canvas.create_image(0, 0, anchor=tk.NW, image=tk_image)
+
 # Create a circular shape (Oval)
-circle = canvas.create_oval(width//2+100,height//2+100,width//2-100,height//2-100, fill="blue", outline="black")
+circle = canvas.create_oval(width//2+50,height//2+50,width//2-50,height//2-50, fill="blue", outline="black")
 
 # Add text in the center
 text = canvas.create_text(width//2,height//2, text="Click Me", font=("Arial", 12, "bold"), fill="white")
@@ -34,9 +53,9 @@ text = canvas.create_text(width//2,height//2, text="Click Me", font=("Arial", 12
 canvas.tag_bind(circle, "<Button-1>", on_click)
 canvas.tag_bind(text, "<Button-1>", on_click)
 
-# Bind relaseing event to both circle and text 
-canvas.tag_bind(circle,"<ButtonRelease-1>",on_relase)
-canvas.tag_bind(circle,"<ButtonRelease-1>",on_relase)
+# Bind releasing event to both circle and text 
+canvas.tag_bind(circle,"<ButtonRelease-1>",on_release)
+canvas.tag_bind(text,"<ButtonRelease-1>",on_release)
 
 
 # bind circle event to mou position 

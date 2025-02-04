@@ -4,7 +4,7 @@ import os
 import sys
 
 
-pygame.mixer.pre_init(44100,-16,2,512)
+pygame.mixer.pre_init(44100,-16,2,512)  
 pygame.init()
 
 # define all color
@@ -41,14 +41,14 @@ class gamebasic:
         self.medkit_y = random.randint(20,self.height)  
 
         # music album
-        self.bulletsound = pygame.mixer.Sound('assests/bulletfire.wav')
-        self.bullethit = pygame.mixer.Sound('assests/bullethit.mp3')
-        self.medkit_effect = pygame.mixer.Sound('assests/medkit_effect.mp3')
-        self.levelup = pygame.mixer.Sound('assests/levelup.mp3')
-        self.gameover_effect = pygame.mixer.Sound('assests/gameover.mp3')
-        self.gamestart = pygame.mixer.Sound('assests/gamestart.wav')
-        self.gameloop_sound = pygame.mixer.Sound('assests/gameloop.mp3')
-        self.hitsound = pygame.mixer.Sound('assests/hitsound.mp3')
+        self.bulletsound = pygame.mixer.Sound('assets/bulletfire.wav')
+        self.bullethit = pygame.mixer.Sound('assets/bullethit.mp3')
+        self.medkit_effect = pygame.mixer.Sound('assets/medkit_effect.mp3')
+        self.levelup = pygame.mixer.Sound('assets/levelup.mp3')
+        self.gameover_effect = pygame.mixer.Sound('assets/gameover.mp3')
+        self.gamestart = pygame.mixer.Sound('assets/gamestart.wav')
+        self.gameloop_sound = pygame.mixer.Sound('assets/gameloop.mp3')
+        self.hitsound = pygame.mixer.Sound('assets/hitsound.mp3')
     def show_fps(self,fps_text):
         font = pygame.font.SysFont(None, 30)
         fps_surface = font.render(f'FPS: {int(fps_text)}', True, color['white'])
@@ -86,7 +86,7 @@ class gamebasic:
 
     def after_gameover(self):
         # iamge of gameover
-        self.gameover = pygame.image.load('assests/gameover.jpg')
+        self.gameover = pygame.image.load('assets/gameover.jpg')
         self.gameover = pygame.transform.scale(self.gameover,(self.width,self.height))
         
         self.gameover_effect.play()
@@ -234,7 +234,7 @@ class healtbar():
         self.current_hp = max_hp  # set the current hp to max_hp 
         self.max_hp = max_hp
 
-        self.medkit = pygame.image.load('assests/medkit.png').convert_alpha()
+        self.medkit = pygame.image.load('assets/medkit.png').convert_alpha()
         self.medkit = pygame.transform.scale(self.medkit,(50,50))
         self.medkit_mask = pygame.mask.from_surface(self.medkit)
 
@@ -258,7 +258,7 @@ class spaceship():
         self.screen = screen  
         self.score = 0
         #import image 
-        self.ship = pygame.image.load('assests/ship.png').convert_alpha()
+        self.ship = pygame.image.load('assets/ship.png').convert_alpha()
         self.ship_mash = pygame.mask.from_surface(self.ship)
             
     def move(self,dx,dy):
@@ -281,7 +281,7 @@ class bullet():
         self.bullet_y = bullet_y
         self.bullet_list  = []
         self.screen = screen
-        self.image = pygame.image.load('assests/bullet.png')
+        self.image = pygame.image.load('assets/bullet.png')
         self.image = pygame.transform.scale(self.image,(20,20))
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -297,7 +297,7 @@ class enemy:
         self.screen = screen
     
         self.enemy_list  = [
-            pygame.transform.scale(pygame.image.load(f'assests/enemy{i}.png').convert_alpha(),(100,100))
+            pygame.transform.scale(pygame.image.load(f'assets/enemy{i}.png').convert_alpha(),(100,100))
             for i in range(3)
         ]
 
