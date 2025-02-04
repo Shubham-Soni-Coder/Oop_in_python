@@ -1,69 +1,62 @@
-import tkinter as tk
-from PIL import Image,ImageTk
-
-def on_click(event):
-    canvas.itemconfig(circle,fill='gray')
-
-def on_release(event):
-    canvas.itemconfig(circle, fill='blue')
-    from level1 import start_game
-    start_game()  # Start the game loop
-
-def on_enter(event): # event for enter positon of mouse in button
-    canvas.config(cursor='hand2')
-
-def on_leave(event): # event for levening position of mouse out button 
-    canvas.config(cursor='arrow')
-
-# game variable 
-width = 800
-height = 700
-
-# Create a window
-root = tk.Tk()
-root.title("Circular Button")
-root.geometry(f"{width}x{height}")
+import pygame 
+import sys
+from level1 import GameStart,color
 
 
-# create a canvas 
-canvas = tk.Canvas(root, width=width, height=height, bg="white", highlightthickness=5)
-canvas.pack()
+pygame.init()
+class maingame:
+    def __init__(self,width=900,height=700):
+        self.width = width
+        self.height = height
 
-# load image 
-image = Image.open('assests/bg.jpg')
+        # set up display 
+        self.screen = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption('Levels')
 
-# resize image
-image = image.resize((width,height))
+        self.circle_button = circle_button(self.width/2,self.height/2,50,color['red'],self.screen)
+        
+        pygame.mouse.set_visible(True)
 
-# convert image to tkinter image
+    def gameloop(self):
+        run = True
+        while run:
+            for event in pygame.event.get():
+                mouse_x,mouse_y = pygame.mouse.get_pos()
+                is_howered = self.circle_button.draw().collidepoint(mouse_x,mouse_y)
+                if event.type == pygame.QUIT:
+                    self.run = False
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.circle_button.draw().collidepoint(event.pos):
+                        print('hit it')
+            pygame.mouse.set_cursor(*self.circle_button.hand_cursor) if is_howered else pygame.mouse.set_cursor(*self.circle_button.arrow_cursor)
+            self.circle_button.draw()
+            pygame.display.update()    
 
-tk_image = ImageTk.PhotoImage(image)
+class circle_button:
+    def __init__(self, x, y, radius, color,screen):
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.color = color
+        self.screen = screen
 
-# Create a label to display the image
+        self.setup_cursor()
+    def setup_cursor(self):
 
-canvas.create_image(0, 0, anchor=tk.NW, image=tk_image)
+        hand_cursor = pygame.image.load('assets/hand_cursor.png')
+        hand_cursor = pygame.transform.scale(hand_cursor, (20, 20))
+        self.hand_cursor = pygame.cursors.Cursor((0, 0), hand_cursor)
+        self.arrow_cursor = pygame.cursors.arrow
 
-# Create a circular shape (Oval)
-circle = canvas.create_oval(width//2+50,height//2+50,width//2-50,height//2-50, fill="blue", outline="black")
+    def draw(self):
+        font = pygame.font.SysFont('Comic Sans MS',20)
+        text = font.render('Level 1', True, color['white'])
 
-# Add text in the center
-text = canvas.create_text(width//2,height//2, text="Click Me", font=("Arial", 12, "bold"), fill="white")
+        cirlce = pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.radius)
+        self.screen.blit(text,(self.x-30,self.y-15))
+        return cirlce
 
-# Bind pressing event to both circle and text
-canvas.tag_bind(circle, "<Button-1>", on_click)
-canvas.tag_bind(text, "<Button-1>", on_click)
-
-# Bind releasing event to both circle and text 
-canvas.tag_bind(circle,"<ButtonRelease-1>",on_release)
-canvas.tag_bind(text,"<ButtonRelease-1>",on_release)
-
-
-# bind circle event to mou position 
-canvas.tag_bind(circle,"<Enter>",on_enter)
-canvas.tag_bind(text,"<Enter>",on_enter)
-
-# # on leveinng
-canvas.tag_bind(circle,"<Leave>",on_leave)
-canvas.tag_bind(text,"<Leave>",on_leave)
-
-root.mainloop()
+game = maingame()                
+game.gameloop()

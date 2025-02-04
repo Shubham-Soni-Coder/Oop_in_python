@@ -13,13 +13,15 @@ color = {
     'green': (0, 255, 0),
 }
 
-pygame.init()
+# Initialize pygame only once
+pygame.init()   
 
 class GameStart:
     def __init__(self):
         # Set up the display
         self.screen = pygame.display.set_mode((900, 700))
         pygame.display.set_caption("Game Instructions")
+        
         self.setup_fonts()
         self.setup_cursors()
         self.setup_texts()
@@ -29,7 +31,7 @@ class GameStart:
     def setup_fonts(self):
         self.font = pygame.font.SysFont('Comic Sans MS', 40)
         self.button_font = pygame.font.SysFont('Comic Sans MS', 30)
-
+ 
     def setup_cursors(self):
         hand_cursor = pygame.image.load('assets/hand_cursor.png')
         hand_cursor = pygame.transform.scale(hand_cursor, (20, 20))
@@ -44,15 +46,6 @@ class GameStart:
     def setup_button(self):
         self.button_rect = pygame.Rect(350, 500, 200, 60)
 
-    def handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.button_rect.collidepoint(event.pos):
-                    self.start_game()
-
     def start_game(self):
         pygame.mouse.set_visible(False)
         pygame.mouse.set_cursor(*self.arrow_cursor)
@@ -61,23 +54,28 @@ class GameStart:
     def main_loop(self):
         pygame.mouse.set_visible(True)
         maingame.gameloop_sound.play()
-
-        start = True
-        while start:
+        pygame.event.pump()
+        self.run = True
+        while self.run:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             is_hovered = self.button_rect.collidepoint(mouse_x, mouse_y)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.run = False
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.button_rect.collidepoint(event.pos):
+                        self.start_game()
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_KP_ENTER]:
                 is_hovered = True
-                start = False
                 maingame.gameloop_sound.stop()
                 maingame.gamestart.play()
                 self.start_game()
 
             pygame.mouse.set_cursor(*self.cursor) if is_hovered else pygame.mouse.set_cursor(*self.arrow_cursor)
-
-            self.handle_events()
 
             # Fill the screen with black
             self.screen.fill(color['black'])
@@ -93,5 +91,8 @@ class GameStart:
             # Update the display
             pygame.display.update()
 
-if __name__ == "__main__":
+def start_game():
     GameStart()
+
+if __name__=="__main__":
+    start_game()   
