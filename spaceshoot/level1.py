@@ -10,6 +10,7 @@ color = {
     'hover_color': (70, 70, 200),
     'red': (255, 0, 0),
     'blue': (0, 0, 255),
+    'Dark_blue':(0,0,155),
     'green': (0, 255, 0),
 }
 
@@ -17,9 +18,11 @@ color = {
 pygame.init()   
 
 class GameStart:
-    def __init__(self):
+    def __init__(self,width=900,height=700):
+        self.width = width
+        self.height = height
         # Set up the display
-        self.screen = pygame.display.set_mode((900, 700))
+        self.screen = pygame.display.set_mode((self.width,self.height))
         pygame.display.set_caption("Game Instructions")
         
         self.setup_fonts()
@@ -75,7 +78,7 @@ class GameStart:
                 maingame.gamestart.play()
                 self.start_game()
 
-            pygame.mouse.set_cursor(*self.cursor) if is_hovered else pygame.mouse.set_cursor(*self.arrow_cursor)
+            pygame.mouse.set_cursor(    *self.cursor) if is_hovered else pygame.mouse.set_cursor(*self.arrow_cursor)
 
             # Fill the screen with black
             self.screen.fill(color['black'])
@@ -90,6 +93,11 @@ class GameStart:
 
             # Update the display
             pygame.display.update()
+
+    def __call__(self,width=900, height=700):
+        self.width = width
+        self.height = height
+
 
 def start_game():
     GameStart()
