@@ -22,7 +22,7 @@ class Game:
         root.withdraw() # turn off the tk window 
         messagebox.showinfo("Message Box", "Complete Preview level first")
         root.destroy() # destroy after show message 
-
+    
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -70,7 +70,7 @@ class Levels:
 
         # Level Data 1:Unlocked and 2:locked
         self.levels = [1,0,0,0,0,0,0,0,0]
-        
+
         # Button of levels
         self.Button_Rows,self.Button_Column = 3,3
         self.Button_Size = 40

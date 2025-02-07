@@ -25,6 +25,7 @@ class GameStart:
         self.screen = pygame.display.set_mode((self.width,self.height))
         pygame.display.set_caption("Game Instructions")
         
+        # call all Function 
         self.setup_fonts()
         self.setup_cursors()
         self.setup_texts()
@@ -57,7 +58,6 @@ class GameStart:
     def main_loop(self):
         pygame.mouse.set_visible(True)
         maingame.gameloop_sound.play()
-        pygame.event.pump()
         self.run = True
         while self.run:
             mouse_x, mouse_y = pygame.mouse.get_pos()
