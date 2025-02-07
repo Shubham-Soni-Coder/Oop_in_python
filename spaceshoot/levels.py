@@ -1,5 +1,8 @@
 import pygame 
-from level1 import color
+from level1 import GameStart,color
+import tkinter as tk 
+from tkinter import messagebox
+
 pygame.init()
 
 class Game:
@@ -12,28 +15,47 @@ class Game:
         pygame.mouse.set_visible(True)
         self.levels = Levels(self.width,self.height,self.screen)
 
+    @staticmethod
+    def show_messagebox():
+        '''Display a normal message box'''
+        root = tk.Tk()
+        root.withdraw() # turn off the tk window 
+        messagebox.showinfo("Message Box", "Complete Preview level first")
+        root.destroy() # destroy after show message 
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mx,my = pygame.mouse.get_pos()
-                for i,(x,y) in enumerate(self.levels.button_position):
-                    if (x-mx) ** 2 + (y-my) ** 2 <=self.levels.Button_Size **2 and self.levels.levels[i]==1:
-                        print("Button Clicked")
+                mx, my = pygame.mouse.get_pos()
+                for i, (x, y) in enumerate(self.levels.button_position):
+                    if (x - mx) ** 2 + (y - my) ** 2 <= self.levels.Button_Size ** 2:
+                        GameStart() if self.levels.levels[i] == 1 else self.show_messagebox()
+    def update_cursor(self):
+        mx, my = pygame.mouse.get_pos()
+        mouse_over_button = False
+        for i, (x, y) in enumerate(self.levels.button_position):
+            if (x - mx) ** 2 + (y - my) ** 2 <= self.levels.Button_Size ** 2:
+                mouse_over_button = True
+            
+        if mouse_over_button:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+        else:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
     def run(self):
         while self.running:
             self.handle_events()
+            self.update_cursor()
             self.levels.draw()
-            
             pygame.display.flip()
+
     def __call__(self, width=900, height=700):
         self.width = width
         self.height = height
         # This method allows the instance to be called 
         # like a function to update width and height.
-
 
 class Levels:
     def __init__(self,width,heigth,screen):
@@ -48,7 +70,7 @@ class Levels:
 
         # Level Data 1:Unlocked and 2:locked
         self.levels = [1,0,0,0,0,0,0,0,0]
-
+        
         # Button of levels
         self.Button_Rows,self.Button_Column = 3,3
         self.Button_Size = 40
@@ -58,6 +80,7 @@ class Levels:
         self.button_position = [(self.start_x + (i % self.Button_Column) * self.space,
                                  self.start_y + (i // self.Button_Rows) * self.space)
                                  for i in range(len(self.levels))]
+
     def draw(self):
 
         # Draw border

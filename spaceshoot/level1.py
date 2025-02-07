@@ -69,6 +69,8 @@ class GameStart:
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button_rect.collidepoint(event.pos):
+                        maingame.gameloop_sound.stop()
+                        maingame.gamestart.play()
                         self.start_game()
 
             keys = pygame.key.get_pressed()
@@ -78,7 +80,7 @@ class GameStart:
                 maingame.gamestart.play()
                 self.start_game()
 
-            pygame.mouse.set_cursor(    *self.cursor) if is_hovered else pygame.mouse.set_cursor(*self.arrow_cursor)
+            pygame.mouse.set_cursor(*self.cursor) if is_hovered else pygame.mouse.set_cursor(*self.arrow_cursor)
 
             # Fill the screen with black
             self.screen.fill(color['black'])
@@ -98,9 +100,5 @@ class GameStart:
         self.width = width
         self.height = height
 
-
-def start_game():
-    GameStart()
-
 if __name__=="__main__":
-    start_game()   
+    GameStart()
