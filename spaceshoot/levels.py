@@ -1,12 +1,12 @@
 import pygame 
-from level1 import GameStart,color
+from level1 import level1,color
 import tkinter as tk 
 from tkinter import messagebox
 
 pygame.init()
 
 class Game:
-    def __init__(self, width=900, height=700):
+    def __init__(self, width=level1.width, height=level1.height):
         self.width = width
         self.height = height
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -31,11 +31,11 @@ class Game:
                 mx, my = pygame.mouse.get_pos()
                 for i, (x, y) in enumerate(self.levels.button_position):
                     if (x - mx) ** 2 + (y - my) ** 2 <= self.levels.Button_Size ** 2:
-                        GameStart() if self.levels.levels[i] == 1 else self.show_messagebox()
+                        level1() if self.levels.levels[i] == 1 else self.show_messagebox()
     def update_cursor(self):
         mx, my = pygame.mouse.get_pos()
         mouse_over_button = False
-        for i, (x, y) in enumerate(self.levels.button_position):
+        for _, (x, y) in enumerate(self.levels.button_position):
             if (x - mx) ** 2 + (y - my) ** 2 <= self.levels.Button_Size ** 2:
                 mouse_over_button = True
             
@@ -51,7 +51,7 @@ class Game:
             self.levels.draw()
             pygame.display.flip()
 
-    def __call__(self, width=900, height=700):
+    def __call__(self, width=level1.width, height=level1.height):
         self.width = width
         self.height = height
         # This method allows the instance to be called 
@@ -106,6 +106,6 @@ class Levels:
             self.screen.blit(text,(x-15,y-20))
 
 if __name__ == "__main__":
-    game = Game(width=900,height=700)
+    game = Game()
     game.run()
 

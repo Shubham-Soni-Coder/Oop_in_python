@@ -17,7 +17,7 @@ Space Shoot is an exciting arcade-style game developed using Pygame. The objecti
 - **Arrow Keys**: Move the spaceship up, down, left, and right.
 - **Space Bar**: Toggle FPS display.
 - **LCTRL**: Toggle mouse visibility.
-        
+
 ## How to Run
 
 1. Ensure you have Python and Pygame installed.
@@ -31,7 +31,9 @@ python level1.py
 
 ## Files
 
-- `level1.py`: The main game logic.
+- `level1.py`: The main game logic for level 1.
+- `gamelogic.py`: Contains the core game logic and classes.
+- `levels.py`: Manages different levels and their configurations.
 - `assets/ship.png`: The image of the player's spaceship.
 - `assets/enemy0.png`, `assets/enemy1.png`, `assets/enemy2.png`: Images of the enemies.
 - `assets/gameover.jpg`: Game over image.

@@ -3,7 +3,6 @@ import random
 import os 
 import sys
 
-
 pygame.mixer.pre_init(44100,-16,2,512)  
 pygame.init()
 
@@ -16,7 +15,7 @@ color = {
             'black':(0,0,0)
         }
 class gamebasic:
-    def __init__(self,width=900,height=700):
+    def __init__(self,width=1200,height=700):
         self.width = width
         self.height = height 
         self.screen =  pygame.display.set_mode((self.width,self.height))
@@ -38,24 +37,26 @@ class gamebasic:
         self.bullet_list = []   
         # medkit variable 
         self.medkit_x = random.randint(20,self.width-50)
-        self.medkit_y = random.randint(20,self.height)  
-
+        self.medkit_y = random.randint(20,self.height)
         # music album
-        self.bulletsound = pygame.mixer.Sound('assets/bulletfire.wav')
-        self.bullethit = pygame.mixer.Sound('assets/bullethit.mp3')
-        self.medkit_effect = pygame.mixer.Sound('assets/medkit_effect.mp3')
-        self.levelup = pygame.mixer.Sound('assets/levelup.mp3')
-        self.gameover_effect = pygame.mixer.Sound('assets/gameover.mp3')
-        self.gamestart = pygame.mixer.Sound('assets/gamestart.wav')
-        self.gameloop_sound = pygame.mixer.Sound('assets/gameloop.mp3')
-        self.hitsound = pygame.mixer.Sound('assets/hitsound.mp3')
+        try:
+            self.bulletsound = pygame.mixer.Sound('assets/bulletfire.wav')
+            self.bullethit = pygame.mixer.Sound('assets/bullethit.mp3')
+            self.medkit_effect = pygame.mixer.Sound('assets/medkit_effect.mp3')
+            self.levelup = pygame.mixer.Sound('assets/levelup.mp3')
+            self.gameover_effect = pygame.mixer.Sound('assets/gameover.mp3')
+            self.gamestart = pygame.mixer.Sound('assets/gamestart.wav')
+            self.gameloop_sound = pygame.mixer.Sound('assets/gameloop.mp3')
+            self.hitsound = pygame.mixer.Sound('assets/hitsound.mp3')
+        except Exception as e:
+            print(f"Failed to load sound effect:{e}")
+            sys.exit()
     def show_fps(self,fps_text):
         font = pygame.font.SysFont(None, 30)
         fps_surface = font.render(f'FPS: {int(fps_text)}', True, color['white'])
         self.screen.blit(fps_surface, (10, 20))
-
     
-    def draw_button(self):
+    def nextlevel_button(self):
         # Button setup
         self.button_rect = pygame.Rect(self.width//2 - 100, self.height//2 + 100, 200, 60)
         font = pygame.font.Font(None, 36)
@@ -69,7 +70,6 @@ class gamebasic:
 
         pygame.draw.rect(self.screen, color['blue'], self.button_rect, border_radius=10)
         self.screen.blit(button_text, (self.button_rect.x + 40, self.button_rect.y + 20))
-
 
     def simple_event(self):
         for event in pygame.event.get():
@@ -157,7 +157,7 @@ class gamebasic:
                 text_rect2 = text_show2.get_rect(center=(self.width / 2, self.height / 2 + 60))  # New line added
                 self.screen.blit(text_show, text_rect)
                 self.screen.blit(text_show2, text_rect2)  # New line added
-                self.draw_button()
+                self.nextlevel_button()
             pygame.display.update()
 
     def gameloop(self): 
@@ -166,26 +166,25 @@ class gamebasic:
         pygame.time.set_timer(self.medkit_event,random.randint(5000,10000),loops=1)# timer for medkit 
         self.call_classes() # call all the classes 
         while self.run:
-
             self.screen.fill(color['black']) # set background color to black
             if self.userhealtbar.current_hp <= 0:
                 pygame.mouse.set_visible(True)
                 self.after_gameover() # game over
         
-            if self.spaceship.score == 2:
+            if self.spaceship.score == 15:
                 pygame.mouse.set_visible(True) # change visiblily of mouse
                 self.after_win() # win the game
 
             # Keys event      
             key = pygame.key.get_pressed() # key pressed 
             if key[pygame.K_UP] and self.spaceship.ship_y > 0 :
-                self.spaceship.move(0,-7)
+                self.spaceship.move(0,-10)
             elif key[pygame.K_DOWN]and self.spaceship.ship_y < self.height- self.spaceship.ship_size:
-                self.spaceship.move(0,7)
+                self.spaceship.move(0,10)
             elif key[pygame.K_LEFT] and self.spaceship.ship_x>0:
-                self.spaceship.move(-7,0)
+                self.spaceship.move(-10,0)
             elif key[pygame.K_RIGHT] and self.spaceship.ship_x<self.width - self.spaceship.ship_size:
-                self.spaceship.move(7,0)  
+                self.spaceship.move(10,0)  
             # update and draw bullet 
             for b in self.bullet_list[:]:
                 b.update()
@@ -245,7 +244,6 @@ class gamebasic:
             self.simple_event() 
             self.clock.tick(self.fps)
             pygame.display.flip()
-
 
 class healtbar():
     def __init__(self,x,y,w,h,max_hp):

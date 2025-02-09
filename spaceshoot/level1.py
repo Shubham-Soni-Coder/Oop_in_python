@@ -18,7 +18,7 @@ color = {
 pygame.init()   
 
 class GameStart:
-    def __init__(self,width=900,height=700):
+    def __init__(self,width=maingame.width,height=maingame.height):
         self.width = width
         self.height = height
         # Set up the display
@@ -30,7 +30,6 @@ class GameStart:
         self.setup_cursors()
         self.setup_texts()
         self.setup_button()
-        self.main_loop()
 
     def setup_fonts(self):
         self.font = pygame.font.SysFont('Comic Sans MS', 40)
@@ -48,7 +47,7 @@ class GameStart:
         self.button_text = self.button_font.render('OK', True, color['black'])
 
     def setup_button(self):
-        self.button_rect = pygame.Rect(350, 500, 200, 60)
+        self.button_rect = pygame.Rect(self.width // 2 - 100, self.height - 200, 200, 60)
 
     def start_game(self):
         pygame.mouse.set_visible(False)
@@ -91,14 +90,15 @@ class GameStart:
 
             # Draw the button
             pygame.draw.rect(self.screen, color['hover_color'] if is_hovered else color['button_color'], self.button_rect, border_radius=10)
-            self.screen.blit(self.button_text, (self.button_rect.x + 75, self.button_rect.y + 15))
+            self.screen.blit(self.button_text, (self.button_rect.x+75, self.button_rect.y + 15)) # draw ok in button 
 
             # Update the display
             pygame.display.update()
 
-    def __call__(self,width=900, height=700):
+    def __call__(self,width=maingame.width,height=maingame.height):
         self.width = width
         self.height = height
 
+level1 = GameStart()
 if __name__=="__main__":
-    GameStart()
+    level1.main_loop()
