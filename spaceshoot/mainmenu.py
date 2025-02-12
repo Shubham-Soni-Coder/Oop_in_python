@@ -1,6 +1,7 @@
 import pygame
 import sys
-from levels import game, color
+from levels import game
+from level1 import color
 
 # Initialize Pygame globally
 pygame.init()
@@ -72,7 +73,7 @@ class MainMenu:
             self.screen.blit(self.options_text, (self.options_button.x + 20, self.options_button.y + 10))
             self.screen.blit(self.exit_text, (self.exit_button.x + 60, self.exit_button.y + 10))
 
-            # Update the display
+            # Update the display 
             pygame.display.flip()
 
         # Quit Pygame

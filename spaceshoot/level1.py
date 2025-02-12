@@ -99,6 +99,6 @@ class GameStart:
         self.width = width
         self.height = height
 
-level1 = GameStart()
+main = GameStart()
 if __name__=="__main__":
-    level1.main_loop()
+    main.main_loop()
