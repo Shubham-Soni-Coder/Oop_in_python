@@ -2,6 +2,7 @@ import pygame
 from level1 import level1,color
 import tkinter as tk 
 from tkinter import messagebox
+from mainmenu import  main_menu
 
 pygame.init()
 
@@ -14,6 +15,7 @@ class Game:
         self.running = True
         pygame.mouse.set_visible(True)
         self.levels = Levels(self.width,self.height,self.screen)
+        self.back_button_rect = pygame.Rect(self.width // 2 - 75, self.height - 120, 150, 50)
 
     @staticmethod
     def show_messagebox():
@@ -29,12 +31,18 @@ class Game:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = pygame.mouse.get_pos()
+                if self.back_button_rect.collidepoint(mx, my):
+                    self.running = False
+                    main_menu.run()
                 for i, (x, y) in enumerate(self.levels.button_position):
                     if (x - mx) ** 2 + (y - my) ** 2 <= self.levels.Button_Size ** 2:
-                        level1() if self.levels.levels[i] == 1 else self.show_messagebox()
+                        level1.main_loop() if self.levels.levels[i] == 1 else self.show_messagebox()
+
     def update_cursor(self):
         mx, my = pygame.mouse.get_pos()
         mouse_over_button = False
+        if self.back_button_rect.collidepoint(mx, my):
+            mouse_over_button = True
         for _, (x, y) in enumerate(self.levels.button_position):
             if (x - mx) ** 2 + (y - my) ** 2 <= self.levels.Button_Size ** 2:
                 mouse_over_button = True
@@ -49,7 +57,14 @@ class Game:
             self.handle_events()
             self.update_cursor()
             self.levels.draw()
+            self.draw_back_button()
             pygame.display.flip()
+
+    def draw_back_button(self):
+        pygame.draw.rect(self.screen, color['red'], self.back_button_rect)
+        pygame.draw.rect(self.screen, color['black'], self.back_button_rect, 3)
+        text = self.levels.title_font.render("Back", True, color['black'])
+        self.screen.blit(text, (self.back_button_rect.x + 20, self.back_button_rect.y + 5))
 
     def __call__(self, width=level1.width, height=level1.height):
         self.width = width
@@ -105,7 +120,7 @@ class Levels:
             text = self.title_font.render(str(i+1),True,color['black'])
             self.screen.blit(text,(x-15,y-20))
 
+game = Game()
 if __name__ == "__main__":
-    game = Game()
     game.run()
 
