@@ -56,7 +56,7 @@ class MainMenu:
                     elif is_howered2:  # check pos of options
                         print("Options")  # Placeholder for options menu
                     elif is_howered3:  # exit howered
-                        running = False
+                        start = False
 
             # cursor change logic
             if is_howered1 or is_howered2 or is_howered3:

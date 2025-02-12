@@ -2,6 +2,8 @@ import pygame
 import importlib
 import tkinter as tk 
 from tkinter import messagebox
+import threading
+
 
 pygame.init()
 levels = {i:importlib.import_module(f"level{i}") for i in range(1,3)}
@@ -20,11 +22,13 @@ class Game:
     @staticmethod
     def show_messagebox():
         '''Display a normal message box'''
+        
+        # tk window
         root = tk.Tk()
         root.withdraw()  # turn off the tk window 
         messagebox.showinfo("Message Box", "Complete Preview level first")
-        root.destroy()  # destroy after show message 
-
+        
+        root.destroy()
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -36,8 +40,7 @@ class Game:
                     main_menu.run()
                 for i, (x, y) in enumerate(self.levels.button_position):
                     if (x - mx) ** 2 + (y - my) ** 2 <= self.levels.Button_Size ** 2:
-                        levels[i+1].main.main_loop() if self.levels.levels[i] == 1 else self.show_messagebox()
-
+                        levels[i+1].main.main_loop() if self.levels.levels[i] == 1 else threading.Thread(target=self.show_messagebox,daemon=True).start()
     def update_cursor(self):
         mx, my = pygame.mouse.get_pos()
         mouse_over_button = False

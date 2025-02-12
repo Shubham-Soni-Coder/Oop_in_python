@@ -1,34 +1,16 @@
-import pygame
-import sys
+import tkinter as tk
+from tkinter import messagebox
 
-# Initialize Pygame
-pygame.init()
+def on_space(event):
+    messagebox.showinfo("Message Box", "Space bar was pressed")
 
-# Set up the display
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Toggle Mouse Visibility")
+root = tk.Tk()
+root.title("Simple Tkinter Window")
+root.geometry("300x200")
 
-# Variable to track mouse visibility
-mouse_visible = False
-pygame.mouse.set_visible(mouse_visible)
+label = tk.Label(root, text="Press the space bar")
+label.pack(pady=50)
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LCTRL:
-                mouse_visible = not mouse_visible
-                pygame.mouse.set_visible(mouse_visible)
+root.bind('<space>', on_space)
 
-    # Clear the screen
-    screen.fill((0, 0, 0))
-
-    # Draw instructions (optional)
-    font = pygame.font.SysFont(None, 36)
-    text = font.render("Press Left Ctrl to toggle mouse visibility", True, (255, 255, 255))
-    screen.blit(text, (50, 50))
-
-    # Update the display
-    pygame.display.flip()
+root.mainloop()
