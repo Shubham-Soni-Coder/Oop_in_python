@@ -148,7 +148,10 @@ class gamebasic:
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button_rect.collidepoint(pos):
-                        print('Next level starting...')    
+                        print('Next level starting...')
+                    elif self.back_button_rect.collidepoint(pos):  # New line added
+                        print('Going back to main menu...')  # New line added
+                        win = False  # New line added
             self.screen.blit(ship, (ship_x, ship_y)) 
             self.clock.tick(self.fps)
             ship_y -= 10
@@ -158,7 +161,22 @@ class gamebasic:
                 self.screen.blit(text_show, text_rect)
                 self.screen.blit(text_show2, text_rect2)  # New line added
                 self.nextlevel_button()
+                self.back_button()  # New line added
             pygame.display.update()
+
+    def back_button(self):  # New method added
+        self.back_button_rect = pygame.Rect(self.width//2 - 100, self.height//2 + 200, 200, 60)
+        font = pygame.font.Font(None, 36)
+        button_text = font.render("Back", True, color['white'])
+
+        # mouse 
+        hand_mouse = pygame.SYSTEM_CURSOR_HAND
+        arrow_mouse = pygame.SYSTEM_CURSOR_ARROW
+
+        pygame.mouse.set_cursor(hand_mouse) if self.back_button_rect.collidepoint(pygame.mouse.get_pos()) else pygame.mouse.set_cursor(arrow_mouse)
+
+        pygame.draw.rect(self.screen, color['red'], self.back_button_rect, border_radius=10)
+        self.screen.blit(button_text, (self.back_button_rect.x + 70, self.back_button_rect.y + 20))
 
     def gameloop(self): 
         self.run = True
@@ -338,5 +356,6 @@ class enemy:
         self.enemy_y += 3
 
 maingame = gamebasic()
+
 if __name__=="__main__":
     maingame.gameloop()
