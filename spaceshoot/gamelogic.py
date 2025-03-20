@@ -151,7 +151,8 @@ class gamebasic:
                         print('Next level starting...')
                     elif self.back_button_rect.collidepoint(pos):  # New line added
                         print('Going back to main menu...')  # New line added
-                        win = False  # New line added
+                        from mainmenu import main_menu
+                        main_menu.run()  # New line added
             self.screen.blit(ship, (ship_x, ship_y)) 
             self.clock.tick(self.fps)
             ship_y -= 10

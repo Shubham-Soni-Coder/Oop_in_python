@@ -40,7 +40,11 @@ class Game:
                     main_menu.run()
                 for i, (x, y) in enumerate(self.levels.button_position):
                     if (x - mx) ** 2 + (y - my) ** 2 <= self.levels.Button_Size ** 2:
-                        levels[i+1].main.main_loop() if self.levels.levels[i] == 1 else threading.Thread(target=self.show_messagebox,daemon=True).start()
+                        if self.levels.levels[i] == 1:
+                            levels[i+1].main.main_loop()
+                        else : 
+                            try:threading.Thread(target=self.show_messagebox,daemon=True).start()
+                            except: pass 
     def update_cursor(self):
         mx, my = pygame.mouse.get_pos()
         mouse_over_button = False
