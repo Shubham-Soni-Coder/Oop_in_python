@@ -14,7 +14,6 @@ color = {
     'green': (0, 255, 0),
 }
 
-
 # Initialize pygame only once
 pygame.init()   
 
@@ -35,13 +34,22 @@ class GameStart:
         self.setup_texts()
         self.setup_button()
 
+        # Load images
+        self.load_images()
+
+    def load_images(self):
+        try:
+            self.hand_cursor_img = pygame.image.load('assets/image/hand_cursor.png')
+        except FileNotFoundError:
+            print("Error:hand cursor file not found")
+            sys.exit(1)
+
     def setup_fonts(self):
         self.font = pygame.font.SysFont('Comic Sans MS', 40)
         self.button_font = pygame.font.SysFont('Comic Sans MS', 30)
  
     def setup_cursors(self):
-        hand_cursor = pygame.image.load('assets/hand_cursor.png')
-        hand_cursor = pygame.transform.scale(hand_cursor, (20, 20))
+        hand_cursor = pygame.transform.scale(self.hand_cursor_img, (20, 20))
         self.cursor = pygame.cursors.Cursor((0, 0), hand_cursor)
         self.arrow_cursor = pygame.cursors.arrow
 

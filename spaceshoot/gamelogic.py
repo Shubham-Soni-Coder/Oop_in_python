@@ -38,21 +38,38 @@ class gamebasic:
         # medkit variable 
         self.medkit_x = random.randint(20,self.width-50)
         self.medkit_y = random.randint(20,self.height)
-        # enemy ship variable
-        self.enemy_speed = 3
         # music album
+        self.load_music()
+        self.load_images()
+
+    def load_music(self):
         try:
-            self.bulletsound = pygame.mixer.Sound('assets/bulletfire.wav')
-            self.bullethit = pygame.mixer.Sound('assets/bullethit.mp3')
-            self.medkit_effect = pygame.mixer.Sound('assets/medkit_effect.mp3')
-            self.levelup = pygame.mixer.Sound('assets/levelup.mp3')
-            self.gameover_effect = pygame.mixer.Sound('assets/gameover.mp3')
-            self.gamestart = pygame.mixer.Sound('assets/gamestart.wav')
-            self.gameloop_sound = pygame.mixer.Sound('assets/gameloop.mp3')
-            self.hitsound = pygame.mixer.Sound('assets/hitsound.mp3')
+            self.bulletsound = pygame.mixer.Sound('assets/music/bulletfire.wav')
+            self.bullethit = pygame.mixer.Sound('assets/music/bullethit.mp3')
+            self.gameloop_sound = pygame.mixer.Sound('assets/music/gameloop.mp3')
+            self.gameover_effect = pygame.mixer.Sound('assets/music/gameover.mp3')
+            self.gamestart = pygame.mixer.Sound('assets/music/gamestart.wav')
+            self.hitsound = pygame.mixer.Sound('assets/music/hitsound.mp3')
+            self.levelup = pygame.mixer.Sound('assets/music/levelup.mp3')
+            self.medkit_effect = pygame.mixer.Sound('assets/music/medkit_effect.mp3')
         except Exception as e:
-            print(f"Failed to load sound effect:{e}")
+            print(f"Failed to load sound effect: {e}")
             sys.exit()
+
+    def load_images(self):
+        try:
+            self.gameover_image = pygame.image.load('assets/image/gameover.jpg')
+            self.medkit_image = pygame.image.load('assets/image/medkit.png').convert_alpha()
+            self.ship_image = pygame.image.load('assets/image/ship.png').convert_alpha()
+            self.bullet_image = pygame.image.load('assets/image/bullet.png')
+            self.enemy_images = [
+                pygame.transform.scale(pygame.image.load(f'assets/image/enemy{i}.png').convert_alpha(), (100, 100))
+                for i in range(3)
+            ]
+        except Exception as e:
+            print(f"Failed to load image: {e}")
+            sys.exit()
+
     def show_fps(self,fps_text):
         font = pygame.font.SysFont(None, 30)
         fps_surface = font.render(f'FPS: {int(fps_text)}', True, color['white'])
@@ -82,7 +99,7 @@ class gamebasic:
             elif event.type == self.my_event: # check for my event
                 self.bulletsound.play() # play bullet sound 
                 self.bullet_list.append(
-                    bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12)
+                    bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12, self.bullet_image)
                     )     
                 pygame.time.set_timer(self.my_event,self.after_time,loops=1) # make new one in 0.5       
             elif event.type == self.medkit_event: # check for medkit event 
@@ -97,16 +114,15 @@ class gamebasic:
                 if event.key==pygame.K_SPACE: # event for show fps 
                     self.show = not self.show
     def call_classes(self):
-        self.spaceship = spaceship(self.height//2,self.width//2, self.screen) # Call the spaceship class
-        self.enemy = enemy(self.height,self.width,self.screen,self.enemy_speed) # call the enemy class
-        self.bullet = bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12) # call the bullet class
-        self.userhealtbar = healtbar(0,0,100,20,100) # user spaceship healt bar 
-        self.enemyhealtbar = healtbar(self.enemy.enemy_x-20,self.enemy.enemy_y,30,5,100) # class of enemy healtbar
+        self.spaceship = spaceship(self.height//2, self.width//2, self.screen, self.ship_image) # Pass ship_image
+        self.enemy = enemy(self.height, self.width, self.screen, self.enemy_images) # Pass enemy_images
+        self.bullet = bullet(self.screen, self.spaceship.ship_x+57, self.spaceship.ship_y-12, self.bullet_image) # Pass bullet_image
+        self.userhealtbar = healtbar(0, 0, 100, 20, 100, self.medkit_image) # Pass medkit_image
+        self.enemyhealtbar = healtbar(self.enemy.enemy_x-20, self.enemy.enemy_y, 30, 5, 100, self.medkit_image) # Pass medkit_image
 
     def after_gameover(self):
         # iamge of gameover
-        self.gameover = pygame.image.load('assets/gameover.jpg')
-        self.gameover = pygame.transform.scale(self.gameover,(self.width,self.height))
+        self.gameover = pygame.transform.scale(self.gameover_image,(self.width,self.height))
         
         self.gameover_effect.play()
         self.run = False
@@ -150,11 +166,7 @@ class gamebasic:
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button_rect.collidepoint(pos):
-                        print('Next level starting...')
-                    elif self.back_button_rect.collidepoint(pos):  # New line added
-                        print('Going back to main menu...')  # New line added
-                        from mainmenu import main_menu
-                        main_menu.run()  # New line added
+                        print('Next level starting...')    
             self.screen.blit(ship, (ship_x, ship_y)) 
             self.clock.tick(self.fps)
             ship_y -= 10
@@ -164,22 +176,7 @@ class gamebasic:
                 self.screen.blit(text_show, text_rect)
                 self.screen.blit(text_show2, text_rect2)  # New line added
                 self.nextlevel_button()
-                self.back_button()  # New line added
             pygame.display.update()
-
-    def back_button(self):  # New method added
-        self.back_button_rect = pygame.Rect(self.width//2 - 100, self.height//2 + 200, 200, 60)
-        font = pygame.font.Font(None, 36)
-        button_text = font.render("Back", True, color['white'])
-
-        # mouse 
-        hand_mouse = pygame.SYSTEM_CURSOR_HAND
-        arrow_mouse = pygame.SYSTEM_CURSOR_ARROW
-
-        pygame.mouse.set_cursor(hand_mouse) if self.back_button_rect.collidepoint(pygame.mouse.get_pos()) else pygame.mouse.set_cursor(arrow_mouse)
-
-        pygame.draw.rect(self.screen, color['red'], self.back_button_rect, border_radius=10)
-        self.screen.blit(button_text, (self.back_button_rect.x + 70, self.back_button_rect.y + 20))
 
     def gameloop(self): 
         self.run = True
@@ -267,7 +264,7 @@ class gamebasic:
             pygame.display.flip()
 
 class healtbar():
-    def __init__(self,x,y,w,h,max_hp):
+    def __init__(self,x,y,w,h,max_hp,medkit_image):
         self.x = x
         self.y = y
         self.w = w
@@ -275,8 +272,7 @@ class healtbar():
         self.current_hp = max_hp  # set the current hp to max_hp 
         self.max_hp = max_hp
 
-        self.medkit = pygame.image.load('assets/medkit.png').convert_alpha()
-        self.medkit = pygame.transform.scale(self.medkit,(50,50))
+        self.medkit = pygame.transform.scale(medkit_image,(50,50))
         self.medkit_mask = pygame.mask.from_surface(self.medkit)
 
     def update_value(self,x,y): # update the x and y coodinte in main loop
@@ -292,14 +288,14 @@ class healtbar():
         screen.blit(self.medkit,(medkit_x,medkit_y))
         medkit_y+= 10 
 class spaceship():
-    def __init__(self,ship_x, ship_y,screen):
+    def __init__(self,ship_x, ship_y,screen, ship_image):
         self.ship_x = ship_x
         self.ship_y = ship_y 
         self.ship_size = 150 # use in further
         self.screen = screen  
         self.score = 0
         #import image 
-        self.ship = pygame.image.load('assets/ship.png').convert_alpha()
+        self.ship = ship_image
         self.ship_mash = pygame.mask.from_surface(self.ship)
             
     def move(self,dx,dy):
@@ -317,12 +313,12 @@ class spaceship():
         self.screen.blit(self.score_surface,(width-80,10))
 
 class bullet():
-    def __init__(self,screen,bullet_x,bullet_y):
+    def __init__(self,screen,bullet_x,bullet_y, bullet_image):
         self.bullet_x = bullet_x
         self.bullet_y = bullet_y
         self.bullet_list  = []
         self.screen = screen
-        self.image = pygame.image.load('assets/bullet.png')
+        self.image = bullet_image
         self.image = pygame.transform.scale(self.image,(20,20))
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -332,27 +328,18 @@ class bullet():
         self.bullet_y -= 5 
 
 class enemy:
-    def __init__(self,height,width,screen,enemy_speed=3):
+    def __init__(self,height,width,screen, enemy_images):
         self.height = height
         self.width = width
         self.screen = screen
     
-        self.enemy_speed = enemy_speed
-
-        self.enemy_list  = [
-            pygame.transform.scale(pygame.image.load(f'assets/enemy{i}.png').convert_alpha(),(100,100))
-            for i in range(3)
-        ]
+        self.enemy_list  = enemy_images
 
         self.get_image = random.choice(self.enemy_list) # choice the image reandom
         self.enemy_x = random.randint(0,self.width-100) # x random
         self.enemy_y = -self.get_image.get_height() - 20  # start the enemy y to - point        
         self.choice_image()
     
-        # initaize healtbar for the enemy 
-        self.healtbar = healtbar(self.enemy_x,self.enemy_y,30,5,100)
-
-
     def choice_image(self,reset=False):
         if self.enemy_y > 700 or reset: 
             self.get_image = random.choice(self.enemy_list)
@@ -362,14 +349,7 @@ class enemy:
         self.position = (self.enemy_x,self.enemy_y) 
         self.enemy_mask = pygame.mask.from_surface(self.get_image)
         self.screen.blit(self.get_image,self.position)
-        self.enemy_y += self.enemy_speed 
-
-    def update_healt_bar(self):
-        self.healtbar.update_value(self.enemy_x,self.enemy_y)
-
-
-
-
+        self.enemy_y += 3
 
 maingame = gamebasic()
 
