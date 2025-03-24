@@ -14,6 +14,7 @@ color = {
     'green': (0, 255, 0),
 }
 
+
 # Initialize pygame only once
 pygame.init()   
 
@@ -24,7 +25,10 @@ class GameStart:
         # Set up the display
         self.screen = pygame.display.set_mode((self.width,self.height))
         pygame.display.set_caption("Game Instructions")
-        
+
+        # score variable 
+        self.required_score = 15
+        self.start = maingame
         # call all Function 
         self.setup_fonts()
         self.setup_cursors()
@@ -42,7 +46,7 @@ class GameStart:
         self.arrow_cursor = pygame.cursors.arrow
 
     def setup_texts(self):
-        self.text1 = self.font.render("Reach a score of 15", True, color['white'])
+        self.text1 = self.font.render(f"Reach a score of {self.required_score}", True, color['white'])
         self.text2 = self.font.render("to win the game!", True, color['white'])
         self.button_text = self.button_font.render('OK', True, color['black'])
 
@@ -52,7 +56,7 @@ class GameStart:
     def start_game(self):
         pygame.mouse.set_visible(False)
         pygame.mouse.set_cursor(*self.arrow_cursor)
-        maingame.gameloop()
+        self.start.gameloop()
 
     def main_loop(self):
         pygame.mouse.set_visible(True)

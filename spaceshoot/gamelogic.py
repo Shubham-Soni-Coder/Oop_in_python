@@ -38,6 +38,8 @@ class gamebasic:
         # medkit variable 
         self.medkit_x = random.randint(20,self.width-50)
         self.medkit_y = random.randint(20,self.height)
+        # enemy ship variable
+        self.enemy_speed = 3
         # music album
         try:
             self.bulletsound = pygame.mixer.Sound('assets/bulletfire.wav')
@@ -96,7 +98,7 @@ class gamebasic:
                     self.show = not self.show
     def call_classes(self):
         self.spaceship = spaceship(self.height//2,self.width//2, self.screen) # Call the spaceship class
-        self.enemy = enemy(self.height,self.width,self.screen) # call the enemy class
+        self.enemy = enemy(self.height,self.width,self.screen,self.enemy_speed) # call the enemy class
         self.bullet = bullet(self.screen,self.spaceship.ship_x+57,self.spaceship.ship_y-12) # call the bullet class
         self.userhealtbar = healtbar(0,0,100,20,100) # user spaceship healt bar 
         self.enemyhealtbar = healtbar(self.enemy.enemy_x-20,self.enemy.enemy_y,30,5,100) # class of enemy healtbar
@@ -330,11 +332,13 @@ class bullet():
         self.bullet_y -= 5 
 
 class enemy:
-    def __init__(self,height,width,screen):
+    def __init__(self,height,width,screen,enemy_speed=3):
         self.height = height
         self.width = width
         self.screen = screen
     
+        self.enemy_speed = enemy_speed
+
         self.enemy_list  = [
             pygame.transform.scale(pygame.image.load(f'assets/enemy{i}.png').convert_alpha(),(100,100))
             for i in range(3)
@@ -345,6 +349,10 @@ class enemy:
         self.enemy_y = -self.get_image.get_height() - 20  # start the enemy y to - point        
         self.choice_image()
     
+        # initaize healtbar for the enemy 
+        self.healtbar = healtbar(self.enemy_x,self.enemy_y,30,5,100)
+
+
     def choice_image(self,reset=False):
         if self.enemy_y > 700 or reset: 
             self.get_image = random.choice(self.enemy_list)
@@ -354,7 +362,14 @@ class enemy:
         self.position = (self.enemy_x,self.enemy_y) 
         self.enemy_mask = pygame.mask.from_surface(self.get_image)
         self.screen.blit(self.get_image,self.position)
-        self.enemy_y += 3
+        self.enemy_y += self.enemy_speed 
+
+    def update_healt_bar(self):
+        self.healtbar.update_value(self.enemy_x,self.enemy_y)
+
+
+
+
 
 maingame = gamebasic()
 
