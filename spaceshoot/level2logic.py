@@ -15,8 +15,8 @@ class Level2(gamebasic):
         self.required_score = 25 # increase the level score
 
     def spawn_enemy(self):
-        self.enemy = enemy(self.height, self.width, self.screen, self.enemy_speed)
-        self.enemyhealtbar = healtbar(self.enemy.enemy_x - 20, self.enemy.enemy_y, 30, 5, 100)
+        self.enemy = enemy(self.height, self.width,self.screen,self.enemy_images,self.enemy_speed)
+        self.enemyhealtbar = healtbar(self.enemy.enemy_x - 20, self.enemy.enemy_y,30, 5, 100,self.medkit_image)
         self.spawn_next_enemy = False
 
     def gameloop(self):

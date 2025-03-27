@@ -1,5 +1,6 @@
 import pygame
 import random
+from spaceshoot.levelchecker import update_level
 import os 
 import sys
 
@@ -38,7 +39,9 @@ class gamebasic:
         # medkit variable 
         self.medkit_x = random.randint(20,self.width-50)
         self.medkit_y = random.randint(20,self.height)
-        # music album
+        # enemy variable 
+        self.enemy_speed = 3
+        # music and iamge load
         self.load_music()
         self.load_images()
 
@@ -115,7 +118,7 @@ class gamebasic:
                     self.show = not self.show
     def call_classes(self):
         self.spaceship = spaceship(self.height//2, self.width//2, self.screen, self.ship_image) # Pass ship_image
-        self.enemy = enemy(self.height, self.width, self.screen, self.enemy_images) # Pass enemy_images
+        self.enemy = enemy(self.height, self.width, self.screen, self.enemy_images,self.enemy_speed) # Pass enemy_images
         self.bullet = bullet(self.screen, self.spaceship.ship_x+57, self.spaceship.ship_y-12, self.bullet_image) # Pass bullet_image
         self.userhealtbar = healtbar(0, 0, 100, 20, 100, self.medkit_image) # Pass medkit_image
         self.enemyhealtbar = healtbar(self.enemy.enemy_x-20, self.enemy.enemy_y, 30, 5, 100, self.medkit_image) # Pass medkit_image
@@ -148,6 +151,8 @@ class gamebasic:
                         self.gameloop()
     def after_win(self):
         self.run = False
+        current_level = "level1"
+        update_level(current_level)
         self.levelup.play()
         ship = self.spaceship.ship
         ship_x = self.spaceship.ship_x
@@ -166,7 +171,8 @@ class gamebasic:
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button_rect.collidepoint(pos):
-                        print('Next level starting...')    
+                        from level2 import main
+                        main.main_loop()    
             self.screen.blit(ship, (ship_x, ship_y)) 
             self.clock.tick(self.fps)
             ship_y -= 10
@@ -189,7 +195,7 @@ class gamebasic:
                 pygame.mouse.set_visible(True)
                 self.after_gameover() # game over
         
-            if self.spaceship.score == 15:
+            if self.spaceship.score == 2:
                 pygame.mouse.set_visible(True) # change visiblily of mouse
                 self.after_win() # win the game
 
@@ -328,14 +334,15 @@ class bullet():
         self.bullet_y -= 5 
 
 class enemy:
-    def __init__(self,height,width,screen, enemy_images):
+    def __init__(self,height,width,screen,enemy_images,enemy_speed):
         self.height = height
         self.width = width
         self.screen = screen
     
         self.enemy_list  = enemy_images
+        self.enemy_speed = enemy_speed
 
-        self.get_image = random.choice(self.enemy_list) # choice the image reandom
+        self.get_image = random.choice(self.enemy_list) # choice the image random
         self.enemy_x = random.randint(0,self.width-100) # x random
         self.enemy_y = -self.get_image.get_height() - 20  # start the enemy y to - point        
         self.choice_image()
@@ -349,7 +356,7 @@ class enemy:
         self.position = (self.enemy_x,self.enemy_y) 
         self.enemy_mask = pygame.mask.from_surface(self.get_image)
         self.screen.blit(self.get_image,self.position)
-        self.enemy_y += 3
+        self.enemy_y +=self.enemy_speed
 
 maingame = gamebasic()
 

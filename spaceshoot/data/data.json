@@ -1,14 +1,40 @@
 {
     "levels": {
-      "level1": { "completed": false, "unlocked": true },
-      "level2": { "completed": false, "unlocked": false },
-      "level3": { "completed": false, "unlocked": false },
-      "level4": { "completed": false, "unlocked": false },
-      "level5": { "completed": false, "unlocked": false },
-      "level6": { "completed": false, "unlocked": false },
-      "level7": { "completed": false, "unlocked": false },
-      "level8": { "completed": false, "unlocked": false },
-      "level9": { "completed": false, "unlocked": false }
+        "level1": {
+            "completed": true,
+            "unlocked": true
+        },
+        "level2": {
+            "completed": false,
+            "unlocked": false
+        },
+        "level3": {
+            "completed": false,
+            "unlocked": false
+        },
+        "level4": {
+            "completed": false,
+            "unlocked": false
+        },
+        "level5": {
+            "completed": false,
+            "unlocked": false
+        },
+        "level6": {
+            "completed": false,
+            "unlocked": false
+        },
+        "level7": {
+            "completed": false,
+            "unlocked": false
+        },
+        "level8": {
+            "completed": false,
+            "unlocked": false
+        },
+        "level9": {
+            "completed": false,
+            "unlocked": false
+        }
     }
 }
-    

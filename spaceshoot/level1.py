@@ -27,15 +27,16 @@ class GameStart:
 
         # score variable 
         self.required_score = 15
+
+        # Load images
+        self.load_images()
         self.start = maingame
+
         # call all Function 
         self.setup_fonts()
         self.setup_cursors()
         self.setup_texts()
         self.setup_button()
-
-        # Load images
-        self.load_images()
 
     def load_images(self):
         try:
