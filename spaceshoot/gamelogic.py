@@ -1,8 +1,9 @@
 import pygame
 import random
-from spaceshoot.levelchecker import update_level
-import os 
 import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # Add parent directory to sys.path
+from spaceshoot.levelchecker import update_level
 
 pygame.mixer.pre_init(44100,-16,2,512)  
 pygame.init()
